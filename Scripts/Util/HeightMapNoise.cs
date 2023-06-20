@@ -50,6 +50,24 @@ namespace kfutils {
         }
 
 
+        public void ResetDefaultScaling() {
+            scale = SCALE_FOR_ZERO_TO_ONE;
+            offset = 0.5f;
+        }
+
+
+        public void SetFullScaling() {
+            scale = SQRT_THREE;
+            offset = 0.0f;
+        }
+
+
+        public void SetCustomScaling(float scale, float offset) {
+            this.scale = scale;
+            this.offset = offset;
+        }
+
+
         /**
          * Generate a noise map for map coordinates xOff,zOff.
          * 
@@ -78,27 +96,9 @@ namespace kfutils {
         }
 
 
-        public void ResetDefaultScaling() {
-            scale = SCALE_FOR_ZERO_TO_ONE;
-            offset = 0.5f;
-        }
-
-
-        public void SetFullScaling() {
-            scale = SQRT_THREE;
-            offset = 0.0f;
-        }
-
-
-        public void SetCustomScaling(float scale, float offset) {
-            this.scale = scale;
-            this.offset = offset;
-        }
-
-
         private void ProcessOne(SpatialHash rand) {
-            int nodesX = sizex / currentInterval + 2;
-            int nodesY = sizez / currentInterval + 2;
+            int nodesX = Mathf.Max(sizex / currentInterval + 2, 3);
+            int nodesY = Mathf.Max(sizez / currentInterval + 2, 3);
             Vec2D[,] nodes = new Vec2D[nodesX, nodesY];
             for(int i = 0; i < nodesX; i++)
                 for(int j = 0; j < nodesY; j++) {
