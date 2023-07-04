@@ -18,11 +18,13 @@ namespace kfutils {
             this.z = z;
         }
 
+
         public Vec3D(bool randomize) {
                 x = Random.value * 2.0 - 1.0;
                 y = Random.value * 2.0 - 1.0;
                 z = Random.value * 2.0 - 1.0;
         }
+
 
         public Vec3D(SpatialHash random, int px, int py, int pz, int t) {
             x = random.DoubleFor(px, py, pz, t) * 2.0 - 1.0;
@@ -30,9 +32,11 @@ namespace kfutils {
             z = random.DoubleFor(px, py, pz, t + 2) * 2.0 - 1.0;
         }
 
+
         public static double Dot(Vec3D a, Vec3D b) {
             return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
         }
+
 
         public double Dot(Vec3D b) {
             return (x * b.x) + (y * b.y) + (z * b.z);

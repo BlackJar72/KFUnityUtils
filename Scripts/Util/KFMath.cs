@@ -39,8 +39,12 @@ namespace kfutils {
          * @return
          */
         public static float Asymptote(float n, float start, float rate) {
-            if(n > start)
-                return start + (rate / (n - start + rate));
+            if(n > start) {
+                float output = (n - start) / rate;
+                output = 1 - (1 / (output + 1));
+                output = (output * rate) + start;
+                return output;
+            }
             return n;
         }
 
@@ -61,8 +65,12 @@ namespace kfutils {
          * @return
          */
         public static double Asymptote(double n, double start, double rate) {
-            if(n > start)
-                return start + (rate / (n - start + rate));
+            if(n > start) {
+                double output = (n - start) / rate;
+                output = 1 - (1 / (output + 1));
+                output = (output * rate) + start;
+                return output;
+            }
             return n;
         }
 

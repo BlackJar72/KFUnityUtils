@@ -11,6 +11,7 @@ namespace kfutils {
     /// following the asxes.
     ///
     /// WARNING:  This uses a fair amount of RAM and can be pretty slow.
+    /// THIS IS NOT REALLY GOOD ANYWAY!!! -- DO NOT WASTE TIME USING IT!
     /// </summary>
     public class AdvancedNoise {
         private int sizex, sizez;
