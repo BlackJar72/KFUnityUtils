@@ -82,6 +82,8 @@ namespace kfutils {
                 for(int j = 0; j < worldSize; j++) {
                     tmesh[i, j] = (noisemap[i, j] + 0.25f) * 1.33333333333f;
                     // Would normally be done afterward.
+                    // This should be based on derived continent map
+                    // (Probably three forms: Ocean, land, and mountains.)
                     tmesh[i, j] = tmesh[i, j] * 0.5f;
                 }
 

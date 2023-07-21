@@ -1,3 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
+
+
 namespace kfutils {
 
 
@@ -18,6 +24,7 @@ namespace kfutils {
         double[,] field;
         double scale, divisor;
         SpatialHash random;
+        Vec2D[,] nodes;
 
 
         public NoiseMap2D(SpatialHash random, int size, int interval, int cutoff,
@@ -60,12 +67,16 @@ namespace kfutils {
             field = new double[size, size];
             currentInterval = interval;
             divisor = 1.0;
+            int nodesX = Mathf.Max(size / cutoff + 2, 3);
+            int nodesY = Mathf.Max(size / cutoff + 2, 3);
+            nodes = new Vec2D[nodesX + 1, nodesY + 1];
             while(currentInterval > cutoff) {
                 ProcessOne(startz);
                 divisor *= 2;
                 currentInterval /= 2;
                 startz += 2;
             }
+            nodes = null; // Release for garbage collection, even if this is not for some reason
             return field;
         }
 
@@ -77,9 +88,8 @@ namespace kfutils {
          * @param startz
          */
         private void ProcessOne(int startz) {
-            int nodesX = size / currentInterval + 1;
-            int nodesY = size / currentInterval + 1;
-            Vec2D[,] nodes = new Vec2D[nodesX, nodesY];
+            int nodesX = Mathf.Max(size / currentInterval + 2, 3);
+            int nodesY = Mathf.Max(size / currentInterval + 2, 3);
             for(int i = 0; i < nodesX; i++)
                 for(int j = 0; j < nodesY; j++) {
                     nodes[i, j] = new Vec2D(random, (regx * nodesX - 1) + i,
