@@ -31,7 +31,6 @@ namespace kfutils {
         float divisor;
         private float scale = SCALE_FOR_ZERO_TO_ONE;
         private float offset = 0.5f;
-        private Vec2D[,] nodes;
 
 
         public HeightNoiseMap(int sizex, int sizey, int interval, int cutoff) {
@@ -84,9 +83,6 @@ namespace kfutils {
             field = new float[sizex + 1, sizez +1];
             currentInterval = interval;
             divisor = 1.0f;
-            int nodesX = Mathf.Max(sizex / cutoff + 2, 3);
-            int nodesY = Mathf.Max(sizez / cutoff + 2, 3);
-            nodes = new Vec2D[nodesX + 1, nodesY + 1];
             while(currentInterval > cutoff) {
                 ProcessOne(rand);
                 divisor *=2;
@@ -96,7 +92,6 @@ namespace kfutils {
                 for(int j = 0; j < sizez + 1; j++) {
                     field[i, j] = (field[i, j] * scale) + offset;
                 }
-            nodes = null; // Free for garbage collection, even if this isn't for some reason
             return field;
         }
 
@@ -104,6 +99,7 @@ namespace kfutils {
         private void ProcessOne(SpatialHash rand) {
             int nodesX = Mathf.Max(sizex / currentInterval + 2, 3);
             int nodesY = Mathf.Max(sizez / currentInterval + 2, 3);
+            Vec2D[,] nodes = new Vec2D[nodesX, nodesY];
             for(int i = 0; i < nodesX; i++)
                 for(int j = 0; j < nodesY; j++) {
                     nodes[i, j] = new Vec2D(rand, i + xOff / currentInterval,
