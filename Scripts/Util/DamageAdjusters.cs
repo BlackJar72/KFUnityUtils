@@ -172,7 +172,6 @@ namespace kfutils {
             if(((damages.type & (DamageType.magic | DamageType.spiritual)) == 0)) {
                 damages *= 0;
             }
-            Debug.Log(damages.shock);
             return damages;
         }
 
@@ -270,11 +269,7 @@ namespace kfutils {
 
 
         public static DamageAdjuster GetAdjuster(DamageAdjustType type) => Adjusters[(int)type];
-        public static Damages Adjust(Damages damage, DamageAdjustType type) //=> Adjusters[(int)type].adjust(damage);
-        {
-            Debug.Log("DamageAdjustList.Adjust -> " + type + " -> " + Adjusters[(int)type] + " -> " + Adjusters[(int)type].adjust(damage).shock);
-            return Adjusters[(int)type].adjust(damage);
-        }
+        public static Damages Adjust(Damages damage, DamageAdjustType type) => Adjusters[(int)type].adjust(damage);
     }
     #endregion
 }
