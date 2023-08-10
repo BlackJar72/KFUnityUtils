@@ -65,18 +65,18 @@ namespace kfutils {
 
 
         public void Heal(float amount) {
-            wound = Mathf.Clamp(wound + amount, 0, baseHealth + shock);
-            shock = Mathf.Clamp(shock + amount, 0, baseHealth + shock);
+            wound = Mathf.Clamp(wound + amount, 0, baseHealth + buff);
+            shock = Mathf.Clamp(shock + amount, 0, baseHealth + buff);
         }
 
 
         public void HealShock(float amount) {;
-            shock = Mathf.Clamp(shock + amount, 0, baseHealth + shock);
+            shock = Mathf.Clamp(shock + amount, 0, baseHealth + buff);
         }
 
 
         public void HealWound(float amount) {
-            wound = Mathf.Clamp(wound + amount, 0, baseHealth + shock);
+            wound = Mathf.Clamp(wound + amount, 0, baseHealth + buff);
         }
 
 
