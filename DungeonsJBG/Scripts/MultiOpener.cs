@@ -6,7 +6,7 @@ using UnityEngine;
 namespace kfutils {
 
     public class MultiOpener : MonoBehaviour, IDoorOpener {
-        [SerializeField] SimpleOpener[] doors;
+        [SerializeField] List<SimpleOpener> doors;
 
 
         public void Activate() {
