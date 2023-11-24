@@ -5,23 +5,23 @@ using UnityEngine;
 
 namespace kfutils {
 
-    public class MultiOpener : MonoBehaviour, IDoorOpener {
+    public class MultiOpener : SimpleOpener {
         [SerializeField] List<SimpleOpener> doors;
 
 
-        public void Activate() {
+        public override void Activate() {
             foreach(SimpleOpener door in doors)
                 door.Activate();
         }
 
 
-        public void Close() {
+        public override void Close() {
             foreach(SimpleOpener door in doors)
                 door.Close();
         }
 
 
-        public void Open() {
+        public override void Open() {
             foreach(SimpleOpener door in doors)
                 door.Open();
         }

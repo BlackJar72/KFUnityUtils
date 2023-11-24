@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace kfutils {
 
-    public class SimpleOpener : MonoBehaviour, IDoorOpener {
+    public class HingeOpener : SimpleOpener {
         public enum Axes {
             X,
             Y,
@@ -22,9 +22,9 @@ namespace kfutils {
         [SerializeField] float closedAngle = 0f;
         [SerializeField] float openAngle = -85f;
         [SerializeField] float timeToOpen = 1f;
+        [SerializeField] bool open;
 
         private bool moving;
-        private bool open;
         private Quaternion closedQ;
         private Quaternion openQ;
         private float t, startT;
@@ -53,10 +53,25 @@ namespace kfutils {
             }
             closedQ = Quaternion.Euler(closedEuler);
             openQ = Quaternion.Euler(openEuler);
+            if(open) {
+                hinge.transform.localRotation = openQ;
+            } else {
+                hinge.transform.localRotation = closedQ;
+            }
         }
 
 
-        public void Open() {
+        public override void Open() {
+            if(!(moving || open)) DoOpen();
+        }
+
+
+        public override void Close() {
+            if(!moving && open) DoClose();
+        }
+
+
+        protected void DoOpen() {
             open = true;
             moving = true;
             startT = Time.time;
@@ -64,7 +79,7 @@ namespace kfutils {
         }
 
 
-        public void Close() {
+        protected void DoClose() {
             open = false;
             moving = true;
             startT = Time.time;
@@ -72,10 +87,10 @@ namespace kfutils {
         }
 
 
-        public void Activate() {
+        public override void Activate() {
             if (moving) return;
-            else if (open) Close();
-            else Open();
+            else if (open) DoClose();
+            else DoOpen();
         }
 
 

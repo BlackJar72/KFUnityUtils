@@ -12,6 +12,7 @@ namespace kfutils {
         void Close();
 
         void Activate();
+
     }
 
 }
