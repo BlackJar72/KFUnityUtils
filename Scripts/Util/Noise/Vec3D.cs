@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-namespace kfutils {
+namespace kfutils.noise {
 
     /// <summary>
     /// A simple, alternate Vector2 representation, used exclusively for my own noise functions.

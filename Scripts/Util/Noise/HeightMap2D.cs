@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-namespace kfutils
+namespace kfutils.noise
 {
 
     public class HeightMap2D

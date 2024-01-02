@@ -1,4 +1,4 @@
-namespace kfutils {
+namespace kfutils.noise {
 
 
      /**

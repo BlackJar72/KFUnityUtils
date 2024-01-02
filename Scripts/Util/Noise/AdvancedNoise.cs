@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace kfutils {
+namespace kfutils.noise {
 
     /// <summary>
     /// Produces a distorted noise map by using more noise layers to pull around the effective locations.

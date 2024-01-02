@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace kfutils {
+namespace kfutils.noise {
 
     /**
      * A simple 2-D gradient noise generation class.  Technically, this is misnamed 
