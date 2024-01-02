@@ -58,16 +58,16 @@ namespace kfutils {
     public static class DamageUtils {
 
         public static int RollDamage(int damageRating) {
-            int half = damageRating / 2;
-            return half + UnityEngine.Random.Range(0, half) + UnityEngine.Random.Range(0, half);
+            int half  = damageRating / 2;
+            int half1 = half + 1;
+            return half + UnityEngine.Random.Range(0, half1) + UnityEngine.Random.Range(0, half1);
         }
 
 
         public static Damages CalcDamage(int damageRating, int armor, DamageType type = DamageType.physical, float AP = 0) {
             float roll = RollDamage(damageRating);
-            float damage = (int)Mathf.Max(1, ((roll - (armor * 0.5f)))
-            * (1.0f - KFMath.Asymptote(armor / 100f, 0.5f, 0.4f)));
-            int realDamage = (int)((damage * (1.0f - AP)) + (roll * AP));
+            float damage = ((roll - (armor * 0.5f))) * (1.0f - KFMath.Asymptote(armor / 100f, 0.5f, 0.4f));
+            int realDamage = (int)Mathf.Max(1, (damage * (1.0f - AP)) + (roll * AP));
             return new Damages(realDamage, CalcWounds(realDamage), type);
         }
 
