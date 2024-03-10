@@ -1,6 +1,6 @@
 namespace kfutils.UI {
 
-    public interface IUIDataProvider <T> {
+    public interface IUIDataProvider <out T> {
         T RetrieveData();
     }
 
