@@ -18,6 +18,7 @@ namespace kfutils {
     }
 
 
+    [System.Serializable]
     public struct Damages {
         public int shock;
         public int wound;
@@ -42,15 +43,19 @@ namespace kfutils {
         }
 
         public static Damages operator *(Damages damage, float number) {
-            damage.shock = (int)Mathf.Max((damage.shock * number), 1);
+            damage.shock = (int)Mathf.Ceil(damage.shock * number);
             damage.wound = DamageUtils.CalcWounds(damage.shock);
             return damage;
         }
 
         public static Damages operator *(float number, Damages damage) {
-            damage.shock = (int)Mathf.Max((damage.shock * number), 1);
+            damage.shock = (int)Mathf.Ceil(damage.shock * number);
             damage.wound = DamageUtils.CalcWounds(damage.shock);
             return damage;
+        }
+
+        public void Nullify() {
+            shock = wound = 0;
         }
     }
 

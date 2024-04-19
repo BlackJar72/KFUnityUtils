@@ -39,6 +39,7 @@ namespace kfutils {
         WEAK_TO_SPIRITUAL = 21,
         //Misc
         GHOSTLY = 22, // Only harmed by Magical / Spiritual attacks (c.f., "magic to hit" in D&D)
+        ANIMATED = 23, // No vital organs, no shock damage (zombies, golems)
 
     }
     #endregion
@@ -170,8 +171,13 @@ namespace kfutils {
 
         public static Damages Ghostly(Damages damages) {
             if(((damages.type & (DamageType.magic | DamageType.spiritual)) == 0)) {
-                damages *= 0;
+                return new Damages(0, 0, damages.type);
             }
+            return damages;
+        }
+
+        public static Damages Animated(Damages damages) {
+            damages.shock = 0;
             return damages;
         }
 
@@ -259,13 +265,14 @@ namespace kfutils {
         public static readonly DamageAdjuster WEAK_TO_SPIRITUAL = new DamageAdjuster(DamageAdjuster.FireResist);
         // Misc
         public static readonly DamageAdjuster GHOSTLY = new DamageAdjuster(DamageAdjuster.Ghostly);
+        public static readonly DamageAdjuster ANIMATED = new DamageAdjuster(DamageAdjuster.Animated);
 
 
         public static readonly DamageAdjuster[] Adjusters = new DamageAdjuster[]
             {NONE, FIRE_RESIST, FIRE_IMMUNE, ELECTRIC_RESIST, ELECTRIC_IMMUNE, ACID_RESIST, ACID_IMMUNE, POISON_RESIST,
                 POISON_IMMUNE, MAGIC_RESIST, MAGIC_IMMUNE, COLD_RESIST, COLD_IMMUNE, SPIRITUAL_RESIST, SPIRITUAL_IMMUNE,
                 WEAK_TO_FIRE, WEAK_TO_ELECTRIC, WEAK_TO_ACID, WEAK_TO_POISON, WEAK_TO_POISON, WEAK_TO_COLD,
-                WEAK_TO_SPIRITUAL, GHOSTLY};
+                WEAK_TO_SPIRITUAL, GHOSTLY, ANIMATED};
 
 
         public static DamageAdjuster GetAdjuster(DamageAdjustType type) => Adjusters[(int)type];

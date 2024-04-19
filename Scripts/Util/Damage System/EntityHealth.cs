@@ -27,6 +27,10 @@ namespace kfutils {
 
         public bool ShouldDie { get => ((wound < 1) || (shock < 1)); }
 
+        //Tried to fix BTree error, didn't work.
+        //There really should be no conversion as errors found by the IDE help find places that need to be edited.
+        //public static implicit operator float(EntityHealth h) => Mathf.Min(h.shock, h.wound);
+
         public EntityHealth(float baseHealth) {
             shock = wound = this.baseHealth = baseHealth;
             buff = 0;

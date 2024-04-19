@@ -79,6 +79,15 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Removes all modifiers; primarily intended for testing purposes.
+        /// </summary>
+        public void ClearModifiers() {
+            modifiers.Clear();
+            ClearAll();
+        }
+
+
         protected void AddResistance(float amount, DamageType type) {
             for(int i = 0; i < 8; i++) {
                 if(((int)type & (0x1 << i)) > 0) resists[i] = Mathf.Max(resists[i], amount);
@@ -121,7 +130,7 @@ namespace kfutils {
         }
 
 
-        public void ClearAll() {
+        protected void ClearAll() {
             for(int i = 0; i < 8; i++) {
                 resists[i] = weaknesses[i] = 0;
             }
@@ -155,6 +164,7 @@ namespace kfutils {
         public override bool Equals(object? other) => (other is DamageModInstance) && (id.Equals(((DamageModInstance)other).id));
         public bool Equals(DamageModInstance other) => id == other.id;
         public override int GetHashCode() => id.GetHashCode();
+        public override string ToString() => "[ amount = " + amount + ", type = " + type + "]";
     }
 
 
@@ -167,6 +177,18 @@ namespace kfutils {
         public float Amount => amount;
         public DamageType Type => type;
         public string ID => id;
+        public bool Equals(DamageModSource other) => id.Equals(other.id);
+        public override bool Equals(object? other) => (other is DamageModSource) && id.Equals(((DamageModSource)other).id);
+        public static bool operator ==(DamageModSource a, DamageModSource b) => a.id.Equals(b.id);
+        public static bool operator !=(DamageModSource a, DamageModSource b) => !a.id.Equals(b.id);
+        public override int GetHashCode() => id.GetHashCode();
+
+        public DamageModSource(float amount, DamageType type, string id, bool unique = false) {
+            this.amount = amount;
+            this.type = type;
+            this.id = id;
+            this. unique = unique;
+        }
 
         public DamageModInstance CreateModifier() {
             string instanceID;
@@ -174,7 +196,7 @@ namespace kfutils {
                 // for persistent effects from (for example) and item, where the ID is from and unique to the item (etc.)
                 return new DamageModInstance(amount, type, id);
             } else {
-                // for effects from generic sources, such as spells or potions, which may becreate more than once or
+                // for effects from generic sources, such as spells or potions, which may be created more than once or
                 // from different sources
                 return new DamageModInstance(amount, type, id + DateTime.Now.ToBinary());
             }
