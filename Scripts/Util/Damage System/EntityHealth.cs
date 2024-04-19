@@ -25,6 +25,8 @@ namespace kfutils {
         public float Shock { get => shock;  set { shock = value; } }
         public float Buff { get => buff;  set { buff = value; MakeSane(); } }
 
+        public float HP => Mathf.Min(wound, shock);
+
         public bool ShouldDie { get => ((wound < 1) || (shock < 1)); }
 
         //Tried to fix BTree error, didn't work.

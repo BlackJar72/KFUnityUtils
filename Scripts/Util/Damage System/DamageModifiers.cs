@@ -148,12 +148,18 @@ namespace kfutils {
     public struct DamageModInstance {
         private readonly float amount; // Positive -> vulnerability, negative -> resistance
         private readonly DamageType type;
-        private readonly string id; // FIXME??? Should this be a string, or something that can be processed more quickly?
+        private readonly long id; // FIXME??? Should this be a string, or something that can be processed more quickly?
         public float Amount => amount;
         public DamageType Type => type;
-        public string ID => id;
+        public long ID => id;
 
         public DamageModInstance(float amount, DamageType type, string id) {
+            this.amount = amount;
+            this.type = type;
+            this.id = (long)id.GetHashCode();
+        }
+
+        public DamageModInstance(float amount, DamageType type, long id) {
             this.amount = amount;
             this.type = type;
             this.id = id;
@@ -191,14 +197,13 @@ namespace kfutils {
         }
 
         public DamageModInstance CreateModifier() {
-            string instanceID;
             if(unique) {
                 // for persistent effects from (for example) and item, where the ID is from and unique to the item (etc.)
-                return new DamageModInstance(amount, type, id);
+                return new DamageModInstance(amount, type, id.GetHashCode());
             } else {
                 // for effects from generic sources, such as spells or potions, which may be created more than once or
                 // from different sources
-                return new DamageModInstance(amount, type, id + DateTime.Now.ToBinary());
+                return new DamageModInstance(amount, type, id.GetHashCode() | (((long)Time.time) << 32));
             }
         }
     }
