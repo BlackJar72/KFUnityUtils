@@ -177,6 +177,9 @@ namespace kfutils {
         }
 
         public static Damages Animated(Damages damages) {
+            if(((damages.type & DamageType.poison) > 0) && ((damages.type & DamageType.physical) == 0)) {
+                return new Damages(0, 0, damages.type);
+            }
             damages.shock = 0;
             return damages;
         }

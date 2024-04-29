@@ -148,7 +148,7 @@ namespace kfutils {
     public struct DamageModInstance {
         private readonly float amount; // Positive -> vulnerability, negative -> resistance
         private readonly DamageType type;
-        private readonly long id; // FIXME??? Should this be a string, or something that can be processed more quickly?
+        private long id;
         public float Amount => amount;
         public DamageType Type => type;
         public long ID => id;
@@ -165,12 +165,36 @@ namespace kfutils {
             this.id = id;
         }
 
-        public static bool operator ==(DamageModInstance a, DamageModInstance b) => a.id.Equals(b.id);
-        public static bool operator !=(DamageModInstance a, DamageModInstance b) => !a.id.Equals(b.id);
-        public override bool Equals(object? other) => (other is DamageModInstance) && (id.Equals(((DamageModInstance)other).id));
-        public bool Equals(DamageModInstance other) => id == other.id;
-        public override int GetHashCode() => id.GetHashCode();
-        public override string ToString() => "[ amount = " + amount + ", type = " + type + "]";
+        public void SetID(long newId) {
+            id = newId;
+        }
+
+        public static bool operator ==(DamageModInstance a, DamageModInstance b) => a.id == b.id;
+        public static bool operator !=(DamageModInstance a, DamageModInstance b) => a.id != b.id;
+
+        public static bool operator ==(DamageModInstance a, string b) => a.id == (long)b.GetHashCode();
+        public static bool operator !=(DamageModInstance a, string b) => !(a.id == (long)b.GetHashCode());
+        public static bool operator ==(string b, DamageModInstance a) => a.id == (long)b.GetHashCode();
+        public static bool operator !=(string b, DamageModInstance a) => !(a.id == (long)b.GetHashCode());
+
+        public static bool operator ==(DamageModInstance a, long b) => a.id == b;
+        public static bool operator !=(DamageModInstance a, long b) => !(a.id == b);
+        public static bool operator ==(long b, DamageModInstance a) => a.id == b;
+        public static bool operator !=(long b, DamageModInstance a) => !(a.id == b);
+
+        public static bool operator ==(DamageModInstance a, int b) => a.id == b;
+        public static bool operator !=(DamageModInstance a, int b) => !(a.id == b);
+        public static bool operator ==(int b, DamageModInstance a) => a.id == b;
+        public static bool operator !=(int b, DamageModInstance a) => !(a.id == b);
+
+        public override bool Equals(object? other) {
+            if(other is DamageModInstance) return ((DamageModInstance)other).id == id;
+            else if(other is string) return ((long)other.GetHashCode()) == id;
+            else if((other is long) || (other is int)) return id == (long)other;
+            else return false;
+        }
+        public override int GetHashCode() => (int)id;
+        public override string ToString() => "[Damage Mode #: " + id + "; Amount = " + amount + ", type = " + type + "]";
     }
 
 
