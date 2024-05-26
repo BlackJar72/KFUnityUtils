@@ -81,6 +81,28 @@ namespace kfutils {
         }
 
 
+        // For a nights (or days) sleep; i.e., a sleep option, not a full day of rest
+        public void RestAndHealHours(float hours) {
+            if(hours < 1) return;
+            float amount = hours >= 8 ? 2 : 0;
+            amount += Math.Clamp((hours - 8.0f) / 16.0f, 0.0f, 1.0f) * 5.0f;
+            hours = Mathf.Min(hours, 8.0f);
+            amount += (10.0f * ((hours * hours) / 64.0f)) + hours;
+            amount *= baseHealth;
+            wound = Mathf.Clamp(wound + amount, 0, baseHealth + buff);
+            shock = baseHealth + buff; // Shock should always be fully healed;
+        }
+
+
+        // For downtime, taken in full days
+        public void RestAndHealDays(int days) {
+            if(days < 1) return;
+            float amount = (float)days * 25.0f * baseHealth;
+            wound = Mathf.Clamp(wound + amount, 0, baseHealth + buff);
+            shock = baseHealth + buff; // Shock should always be fully healed;
+        }
+
+
         public void HealWound(float amount) {
             wound = Mathf.Clamp(wound + amount, 0, baseHealth + buff);
         }
