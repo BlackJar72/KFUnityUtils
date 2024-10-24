@@ -80,12 +80,12 @@ namespace kfutils.noise {
             xOff = x * sizex;
             zOff = z * sizez;
             layer = layer * 2;
-            field = new float[sizex + 1, sizez +1];
+            field = new float[sizex + 1, sizez + 1];
             currentInterval = interval;
             divisor = 1.0f;
             while(currentInterval > cutoff) {
                 ProcessOne(rand);
-                divisor *=2;
+                divisor *= 2;
                 currentInterval /= 2;
             }
             for(int i = 0; i < sizex + 1; i++)

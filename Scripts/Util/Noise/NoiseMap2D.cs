@@ -77,8 +77,8 @@ namespace kfutils.noise {
          * @param startz
          */
         private void ProcessOne(int startz) {
-            int nodesX = size / currentInterval + 1;
-            int nodesY = size / currentInterval + 1;
+            int nodesX = size / currentInterval + 2;
+            int nodesY = size / currentInterval + 2;
             Vec2D[,] nodes = new Vec2D[nodesX, nodesY];
             for(int i = 0; i < nodesX; i++)
                 for(int j = 0; j < nodesY; j++) {
