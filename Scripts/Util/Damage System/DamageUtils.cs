@@ -88,6 +88,13 @@ namespace kfutils {
         }
 
 
+        public static void AppyDamageToExisting(ref Damages damages, int armor, float ap) {
+            float dam = ((damages.shock - (armor * 0.5f))) * (1.0f - KFMath.Asymptote(armor / 100f, 0.5f, 0.4f));
+            damages.shock = (int)Mathf.Max(1, (dam * (1.0f - ap)) + (damages.shock * ap));
+            damages.wound = CalcWounds(damages.shock);
+        }
+
+
         public static int CalcWounds(int shock) {
             if (shock > 12)
             {
