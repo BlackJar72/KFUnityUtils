@@ -82,8 +82,8 @@ namespace kfutils.noise
 
             private void ProcessOne(Xorshift rand)
             {
-                int nodesX = sizex / currentInterval + 1;
-                int nodesY = sizez / currentInterval + 1;
+                int nodesX = sizex / currentInterval + 2;
+                int nodesY = sizez / currentInterval + 2;
                 Vector2[,] nodes = new Vector2[nodesX, nodesY];
                 for (int i = 0; i < nodesX; i++)
                     for (int j = 0; j < nodesY; j++)
