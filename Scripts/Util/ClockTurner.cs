@@ -1,22 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 namespace kfutils {
 public class ClockTurner : MonoBehaviour
 {
-        [SerializeField] GameObject hourHand;
-        [SerializeField] GameObject minuteHand;
 
+        [Tooltip("This must be provided.  The hour hand of the clock.")]
+        [SerializeField] GameObject hourHand;
+        [Tooltip("This must be provided (use an empty game object if you don't want a minute hand).  The minute hand of the clock.")]
+        [SerializeField] GameObject minuteHand;
+        [Tooltip("This is the value that will be used to scale the time; 60 gives a 24 minute day (i.e.,one real world minute = one in game hour).")]
         [SerializeField] float timeScale = 60;
+        [Tooltip("This is the hour the clock will start at, and should be the hour at the start of the game; not used if pre-processing hours.")]
         [SerializeField] float startOffsetHours = 0;
+        [Tooltip("This is an implementation of ATimeForClock that provides the time to the clock.  If null, Unity's time will be used.")]
         [SerializeField] ATimeForClock timeProvider;
+        [Tooltip("If true, the time provider will be expected to return the time of day in hours; if false, it will be expected to return the time in seconds from the start of the game.")]
         [SerializeField] bool preProcessedHours = true;
 
-
-        private float currentTime;
-        private float currentAngle;
+        [Tooltip("Leave as null (none) if the clock has no pendulum.")]
+        [SerializeField] GameObject pendulum;
+        [SerializeField] float maxPendulumSwing = 10;
         private float startOffset;
 
         private const float realSecondsPerRotation = 60 * 60 * 24;
@@ -36,19 +39,28 @@ public class ClockTurner : MonoBehaviour
             secondsPerRotation = realSecondsPerRotation / timeScale;
             secondsPerDegree = secondsPerRotation / 360;
             startOffset = (startOffsetHours * secondsPerRotation) / 12;
-            currentAngle = 0;
         }
 
 
         // Start is called before the first frame update
         void Start()
         {
-            if(timeProvider == null) {
-                moveHands = MoveHandsByUnityTime;        
-            } else if(preProcessedHours) {
-                moveHands = MoveHandsByScaledTime;
+            if(pendulum == null) {
+                if(timeProvider == null) {
+                    moveHands = MoveHandsByUnityTime;        
+                } else if(preProcessedHours) {
+                    moveHands = MoveHandsByScaledTime;
+                } else {
+                    moveHands = MoveHandsByRawTime;
+                }
             } else {
-                moveHands = MoveHandsByRawTime;
+                if(timeProvider == null) {
+                    moveHands = MoveHandsByUnityTimePendulum;
+                } else if(preProcessedHours) {
+                    moveHands = MoveHandsByScaledTimePendulum;
+                } else {
+                    moveHands = MoveHandsByRawTimePendulum;
+                }
             }
         }
 
@@ -57,6 +69,9 @@ public class ClockTurner : MonoBehaviour
         void Update()
         {
             moveHands();
+            if(pendulum != null) {
+                pendulum.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Sin(Time.time % 360) * 10);
+            }
         }
 
 
@@ -84,6 +99,24 @@ public class ClockTurner : MonoBehaviour
         }
 
 
+        private void MoveHandsByUnityTimePendulum() {
+            MoveHandsByUnityTime();
+            pendulum.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Sin(Time.time % 360) * maxPendulumSwing);
+        }
+
+
+        private void MoveHandsByRawTimePendulum() {
+            MoveHandsByRawTime();
+            pendulum.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Sin(Time.time % 360) * maxPendulumSwing);
+        }
+
+
+        private void MoveHandsByScaledTimePendulum() {
+            MoveHandsByScaledTime();
+            pendulum.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Sin(Time.time % 360) * maxPendulumSwing);
+        }
+
+
         /// <summary>
         /// A base class for providing time to the clock, derived from scriptable object.
         /// 
@@ -94,6 +127,10 @@ public class ClockTurner : MonoBehaviour
         /// For use with pre-processed time, override GetTime() to return the time in hours. 
         /// This needs to include any time off-set, as none is provided; it is assumed your 
         /// are feeding the clock the actual in-game hour.
+        /// 
+        /// To use, create a new scriptable object that inherits from this class, and assign
+        /// it to the ClockTurner component in the inspector.  If you are just using Unity's
+        /// time, you do not need to assign a time provider.
         /// </summary>
         public abstract class ATimeForClock : ScriptableObject {
             /// <summary>
