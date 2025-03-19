@@ -108,7 +108,7 @@ namespace kfutils {
             }
             catch (System.FormatException)
             {
-                output |= (ulong)strSeed.GetHashCode();
+                output |= (ulong)((uint)strSeed.GetHashCode());
                 output |= output << 32;
             }
             return output;

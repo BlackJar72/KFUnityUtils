@@ -66,7 +66,15 @@ namespace kfutils {
         }
 
 
-        protected ulong[] getSeed() {
+        override public bool Equals(Object other) {
+            if(other == null || !(other is SpatialHash)) {
+                return false;
+            }
+            return ((seed1 == ((SpatialHash)other).seed1) && (seed2 == ((SpatialHash)other).seed2));
+        }
+
+
+        protected ulong[] GetSeed() {
             return new ulong[] {seed1, seed2};
         }
 
@@ -261,7 +269,7 @@ namespace kfutils {
         }
 
 
-        public long PlngFor(int x, int y, int t) {
+        public long PlongFor(int x, int y, int t) {
             return (long)(UlongFor(x, y, t) & LONG_MASK);
         }
 
