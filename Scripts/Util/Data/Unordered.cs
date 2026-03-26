@@ -58,7 +58,7 @@ namespace kfutils {
 
         private void Shrink()
         {            
-            T[] smaller = new T[data.Length / 2];
+            T[] smaller = new T[Math.Max(data.Length / 2, minSize)];
             Array.Copy(data, 0, smaller, 0, smaller.Length);
             data = smaller;        
         }
