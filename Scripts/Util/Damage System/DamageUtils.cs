@@ -10,7 +10,7 @@ namespace kfutils {
         physical = 0x1 << 0,
         fire = 0x1 << 1,
         electric = 0x1 << 2,
-        acid = 0x1 << 3,
+        caustic = 0x1 << 3, // Formerly "acid"; any burning/corosive substance
         poison = 0x1 << 4,
         magic = 0x1 << 5,
         cold = 0x1 << 6,
