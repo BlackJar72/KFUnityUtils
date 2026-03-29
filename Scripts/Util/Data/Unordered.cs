@@ -10,6 +10,23 @@ namespace kfutils {
     /// <summary>
     /// An unordered version of a list, for times when you need a dynamically sized array 
     /// but don't care about the order.
+    /// 
+    /// This is primarily for use cases where all items must be access in some way (read, processesed, 
+    /// modified, etc.) but is which the order is not important. E.g, with a list of game objects which 
+    /// need to run certain code once per frame without the order of which run its code first, especially 
+    /// where entries can be added or removed.
+    /// 
+    /// If and item might be removed during iteration, the developer must remember to acount for this by 
+    /// only advancing the index when nothing is removed, OR alternately iterating backward so the entries 
+    /// moved from the end will already have been processed.  (Do not use both approachs together as the  
+    /// moved entry then be process again.)
+    /// 
+    /// This will remove items by copying the last item into the index of the removed item and decrimenting 
+    /// the count.  This swapping can greatly reduce the number of copies from that needed for traditional 
+    /// ordered dynamic array types like Lists, which must copy all subsequent entries to maintain oder. 
+    /// 
+    /// It should fascillitate faster removal, especially with long data sets, in situation when the 
+    /// oder is not important but it must also function like a list. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class Unordered<T> : IEnumerable<T>, ICollection<T>, IList<T>
@@ -45,6 +62,13 @@ namespace kfutils {
             minSize = Math.Max(2, values.Count);
             data = new T[minSize];
             foreach(T item in values) Add(item);
+        }
+
+
+        private Unordered(int minSize, int size)
+        {
+            this.minSize = Math.Max(minSize, 2);
+            data = new T[Math.Max(minSize, size)];
         }
 
 
@@ -123,7 +147,10 @@ namespace kfutils {
 
         public IEnumerator<T> GetEnumerator()
         {
-            for (int i = 0; i < count; i++)
+            // Iterating from the end, as the allows some action such as removals; 
+            // remember, the order is not supposed to mater for this type, so neither 
+            // should starting point.
+            for (int i = count - 1; i > -1; i--)
             {
                 yield return data[i];
             }
@@ -144,8 +171,8 @@ namespace kfutils {
         {
             // As this is an unordered list, inserts is treated the same as add
             if(count >= data.Length) Expand();
+            --count;
             data[count] = item;
-            count--;
         }
 
 
@@ -154,9 +181,9 @@ namespace kfutils {
             for(int i = 0; i < count; i++)
             {
                 if(data[i].Equals(item)) {
-                    data[i] = data[count - 1];
-                    count--;   
-                    if(count < (Math.Max(data.Length / 4, minSize))) Shrink();     
+                    --count;
+                    data[i] = data[count];
+                    if((count < (data.Length / 4)) && (data.Length > minSize)) Shrink();     
                     return true;
                 }
             }
@@ -169,9 +196,9 @@ namespace kfutils {
             for(int i = count - 1; i > -1; i--)
             {
                 if(data[i].Equals(item)) {
-                    data[i] = data[count - 1];
-                    count--;   
-                    if(count < (Math.Max(data.Length / 4, minSize))) Shrink();     
+                    --count;
+                    data[i] = data[count];
+                    if((count < (data.Length / 4)) && (data.Length > minSize)) Shrink();     
                     return true;
                 }
             }
@@ -184,11 +211,24 @@ namespace kfutils {
             for(int i = count - 1; i > -1; i--)
             {
                 if(data[i].Equals(item)) {
-                    data[i] = data[count - 1];
-                    count--; 
+                    --count;
+                    data[i] = data[count];
                 }
-            }  
-            if(count < (Math.Max(data.Length / 4, minSize))) Shrink(); 
+            } 
+            if((count < (data.Length / 4)) && (data.Length > minSize)) Shrink(); 
+        }
+
+
+        public void RemoveAll(Predicate<T> predicate)
+        {
+            for(int i = count - 1; i > -1; i--)
+            {
+                if(predicate(data[i])) {
+                    --count;
+                    data[i] = data[count];
+                }
+            }   
+            if((count < (data.Length / 4)) && (data.Length > minSize)) Shrink(); 
         }
 
 
@@ -196,9 +236,9 @@ namespace kfutils {
         {
             if(InBounds(index))
             {
-                data[index] = data[count - 1];  
-                if(count < (Math.Max(data.Length / 4, minSize))) Shrink(); 
-                count--;
+                --count;
+                data[index] = data[count];                   
+                if((count < (data.Length / 4)) && (data.Length > minSize)) Shrink(); 
             }
         }
 
@@ -210,7 +250,7 @@ namespace kfutils {
 
 
         /// <summary>
-        /// Returns a string representation of the deque.
+        /// Returns a string representation of the contents of the Unordered list.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -238,6 +278,18 @@ namespace kfutils {
         {
             List<T> result = new(count);
             for(int i = 0; i < count; i++) result.Add(data[i]);
+            return result;
+        }
+
+
+        /// <summary>
+        /// Creates a shallow copy of the Unordered list.
+        /// </summary>
+        /// <returns></returns>
+        public Unordered<T> Clone()
+        {
+            Unordered<T> result = new(minSize, data.Length);
+            Array.Copy(data, 0, result.data, 0, count);
             return result;
         }
 
