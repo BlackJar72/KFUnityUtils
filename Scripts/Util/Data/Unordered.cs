@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
+using Unity.Burst.CompilerServices;
 
 
 // FIXME: THis should just be in kfutils, not RPG specfic
 namespace kfutils {
-
+ 
 
     /// <summary>
     /// An unordered version of a list, for times when you need a dynamically sized array 
@@ -88,7 +91,15 @@ namespace kfutils {
         }
 
 
-        public bool InBounds(int index) => (index > 0) && (index < count);
+        /// <summary>
+        /// True if the given index is greater than 0 and less than Count; 
+        /// i.e., if it is in bounds.  This is primarily for internal use 
+        /// but is exposed as it could potentially be useful and does not 
+        /// produce any side effects.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [Pure] public bool InBounds(int index) => (index > 0) && (index < count);
 
 
         public T this[int index] { 
@@ -107,12 +118,25 @@ namespace kfutils {
         }
 
 
-        public int Count => count;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T GetUnsafe(int index) => data[index];
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetUnsafe(int index, T value) => data[index] = value;
+
+
+        [Pure] public int Count => count;
 
 
         public bool IsReadOnly => false;
 
 
+        /// <summary>
+        /// Adds the item to the unordered list.  This will be added to 
+        /// the end initially, though other operations may move it as 
+        /// order is not preserved but in order to decrease data copying 
+        /// during Remove operations.
+        /// </summary>
+        /// <param name="item"></param>
         public void Add(T item)
         {
             if(count >= data.Length) Expand();
@@ -121,6 +145,10 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Clears the list.  Technically, sets the count to zero, allowing 
+        /// old data to be overwritten.
+        /// </summary>
         public void Clear()
         {
             count = 0;
@@ -128,6 +156,11 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Tells if at least one instance of item is in the unordered list.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns>true if at least one instance of item is present; false if not</returns>
         public bool Contains(T item)
         {
             for(int i = 0; i < count; i++)
@@ -145,6 +178,12 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Returns an enumarator over the stored data.  This will iterated over the 
+        /// stored data backward, as order should not mater and this makes removing 
+        /// items as you go safe.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
             // Iterating from the end, as the allows some action such as removals; 
@@ -157,6 +196,11 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Finds the index of the first instance of given items.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public int IndexOf(T item)
         {
             for(int i = 0; i < count; i++)
@@ -167,6 +211,30 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Finds the index of the last instance of given items.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public int IndexOfLast(T item)
+        {
+            for(int i = count - 1; i > -1; i--)
+            {
+                if(data[i].Equals(item)) return i;
+            }
+            return -1;
+        }
+
+
+        /// <summary>
+        /// Adds the item to the unordered list.
+        /// 
+        /// This is a synonym for Add(T item), as position is not treated as 
+        /// relevant due to the unordered nature of this data structure.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="item"></param>
+        [Obsolete ("Synonumous with Add(T item); use Add instead to avoid misleading code and unsued parameters.")]
         public void Insert(int index, T item)
         {
             // As this is an unordered list, inserts is treated the same as add
@@ -176,6 +244,11 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Remove the instance of item in the unordered list with the lowest index.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool Remove(T item)
         {
             for(int i = 0; i < count; i++)
@@ -191,6 +264,11 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Remove the instance of item with the highest index.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public bool RemoveLast(T item)
         {
             for(int i = count - 1; i > -1; i--)
@@ -206,6 +284,10 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Remove all instance of item.
+        /// </summary>
+        /// <param name="item"></param>
         public void RemoveAll(T item)
         {
             for(int i = count - 1; i > -1; i--)
@@ -219,6 +301,10 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Remove all entries satisfying the predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
         public void RemoveAll(Predicate<T> predicate)
         {
             for(int i = count - 1; i > -1; i--)
@@ -232,6 +318,11 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Removes the entry currently at the specified index. Technically, this 
+        /// will copy the last entry into the given index and decriment the count.
+        /// </summary>
+        /// <param name="index"></param>
         public void RemoveAt(int index)
         {
             if(InBounds(index))

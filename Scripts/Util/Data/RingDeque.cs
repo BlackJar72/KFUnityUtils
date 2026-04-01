@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Text;
 using UnityEngine;
 
@@ -29,13 +30,13 @@ namespace kfutils
         private int stop;
         private int count;
 
-        public int capacity => data.Length;
-        public int Count => count;
+        [Pure] public int Capacity => data.Length;
+        [Pure] public int Count => count;
 
-        public bool IsReadOnly => false;
-        public bool IsFull => count >= data.Length;
-        public bool HasSpace => count < data.Length;
-        public bool IsEmpty => count < 1;
+        [Pure] public bool IsReadOnly => false;
+        [Pure] public bool IsFull => count >= data.Length;
+        [Pure] public bool HasSpace => count < data.Length;
+        [Pure] public bool IsEmpty => count < 1;
 
 
         public RingDeque(int capacity)
@@ -309,7 +310,7 @@ namespace kfutils
 
 
         /// <summary>
-        /// Removes tha element at the given index.
+        /// Removes the element at the given index.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
