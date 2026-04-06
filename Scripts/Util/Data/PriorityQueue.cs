@@ -45,6 +45,7 @@ namespace kfutils {
 
         public int Count => count;
         public bool IsEmpty => count < 1;
+        public bool NotEmpty => count > 0;
 
         public bool IsReadOnly => false;
 
