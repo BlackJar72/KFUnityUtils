@@ -44,6 +44,7 @@ namespace kfutils {
         private readonly int minSize;
 
         public int Count => count;
+        public bool IsEmpty => count < 1;
 
         public bool IsReadOnly => false;
 
