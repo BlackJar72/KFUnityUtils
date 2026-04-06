@@ -176,15 +176,8 @@ namespace kfutils {
         /****************************************************************************/
 
 
-        /// <summary>
-        /// Returns an enumarator over the stored data.
-        /// </summary>
-        /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
-            // Iterating from the end, as the allows some action such as removals; 
-            // remember, the order is not supposed to mater for this type, so neither 
-            // should starting point.
             for (int i = 0; i < count; i++ )
             {
                 yield return data[i];
