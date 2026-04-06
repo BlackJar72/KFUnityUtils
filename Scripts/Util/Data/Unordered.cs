@@ -5,7 +5,6 @@ using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 
-// FIXME: THis should just be in kfutils, not RPG specfic
 namespace kfutils {
  
 

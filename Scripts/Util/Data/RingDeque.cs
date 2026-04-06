@@ -6,7 +6,6 @@ using System.Text;
 using UnityEngine;
 
 
-// FIXME: THis should just be in kfutils, not RPG specfic
 namespace kfutils
 {
     /// <summary>
