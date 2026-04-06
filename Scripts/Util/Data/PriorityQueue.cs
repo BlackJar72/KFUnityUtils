@@ -142,6 +142,11 @@ namespace kfutils {
         }
 
 
+        /****************************************************************************/
+        /*        METHODS BELOW WILL MOST LLIKELY ONLY BE USED FOR TESTING          */
+        /****************************************************************************/
+
+
        public override string ToString()
         {
             System.Text.StringBuilder builder = new("[");
@@ -169,11 +174,6 @@ namespace kfutils {
             for(int i = 0; i < count; i++) result.Add(data[i]);
             return result;
         }
-
-
-        /****************************************************************************/
-        /*        METHODS BELOW WILL MOST LLIKELY ONLY BE USED FOR TESTING          */
-        /****************************************************************************/
 
 
         public IEnumerator<T> GetEnumerator()
