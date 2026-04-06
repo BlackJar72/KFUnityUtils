@@ -28,7 +28,7 @@ namespace kfutils {
     /// my knowledge of algorithms.
     /// 
     /// Examples of algorithms using priority queues include A* pathfinding, 
-    /// help sort, Prims least spanning tree algorithm, Hoffman compression,
+    /// heep sort, Prims least spanning tree algorithm, Hoffman compression,
     /// and various others (only considering those already invented). Both 
     /// Doomlike Dungeons and Caverns of Evil use priority queues, through 
     /// custum A* implementations, as part of their quality control pass in 
@@ -109,10 +109,6 @@ namespace kfutils {
         }
 
 
-        /// <summary>
-        /// Clears the list.  Technically, sets the count to zero, allowing 
-        /// old data to be overwritten.
-        /// </summary>
         public void Clear()
         {
             count = 0;
@@ -146,11 +142,7 @@ namespace kfutils {
         }
 
 
-        /// <summary>
-        /// Returns a string representation of the contents of the Unordered list.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+       public override string ToString()
         {
             System.Text.StringBuilder builder = new("[");
             for (int i = 0; i < count; i++)
