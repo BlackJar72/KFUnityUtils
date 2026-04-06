@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
-using Unity.Burst.CompilerServices;
 
 
 // FIXME: THis should just be in kfutils, not RPG specfic
