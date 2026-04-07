@@ -131,13 +131,14 @@ namespace kfutils {
         /// <param name="index"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+
+        
         public T GetUnsafe(int index) => data[index];/// <summary>
         /// Set without bounds checking; the backing array may still throw and 
         /// exception if overrun, but the count is not checked. 
         /// </summary>
         /// <param name="index"></param>
-        /// <returns></returns>
-        
+        /// <returns></returns>        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetUnsafe(int index, T value) => data[index] = value;
 
