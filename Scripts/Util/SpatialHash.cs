@@ -2,6 +2,24 @@ using System;
 
 namespace kfutils {
 
+
+    /// <summary>
+    /// A class that produces random numbers by hashing four dimensional 
+    /// coordinates.  This allows for every integer coordinate in 3D space 
+    /// to have its own sequence of random numbers based on "time" t.
+    /// 
+    /// This was created for use in procedural generation, especially of 
+    /// huge or "infinite" worlds.
+    /// 
+    /// It produces good quality randomness while also allowing any number 
+    /// in any sequence to acquired at any time, as many times as needed, 
+    /// without the need to generate intervening numbers first.  Thus, it 
+    /// is not dependent on order, which is very useful in runtime generation 
+    /// of an open world map which might be explored by different routes by 
+    /// different players.
+    /// 
+    /// This was first used in the Minecraft mod Climatic Biomes.
+    /// </summary>
     public class SpatialHash {
         public const int INT_MASK = 0x7fffffff;
         public const ulong LONG_MASK = 0x7fffffffffffffffUL;

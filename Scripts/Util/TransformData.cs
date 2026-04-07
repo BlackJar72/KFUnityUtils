@@ -5,7 +5,18 @@ using UnityEngine;
 namespace kfutils
 {
 
-
+    
+    /// <summary>
+    /// A simple struct created for storing transform data separately from 
+    /// and actual transform.  Real Transform instances in Unity must exist 
+    /// in the scene and part of its hierarchy.  This allows for the position, 
+    /// rotation, and scale to all be stored outside the hierarchy and applied 
+    /// to object in it laters (including, but not limited to spawned game 
+    /// objescts).
+    /// 
+    /// All fields are public, as this is basically just a data container, but 
+    /// various convenience methods are also included.  
+    /// </summary>
     [System.Serializable]
     public struct TransformData
     {

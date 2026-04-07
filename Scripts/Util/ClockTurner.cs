@@ -1,8 +1,12 @@
 using UnityEngine;
 
 namespace kfutils {
-public class ClockTurner : MonoBehaviour
-{
+
+    /// <summary>
+    /// A script for turning hands on a clock based on supplied time.
+    /// </summary>
+    public class ClockTurner : MonoBehaviour
+    {
 
         [Tooltip("This must be provided.  The hour hand of the clock.")]
         [SerializeField] GameObject hourHand;
@@ -75,6 +79,11 @@ public class ClockTurner : MonoBehaviour
         }
 
 
+        /// <summary>
+        /// Move the hands based on Time.time from the Unity Engine.
+        /// 
+        /// Intended to assigned to and used as a delegate.
+        /// </summary>
         private void MoveHandsByUnityTime() {
             float hourHandAngle = (Time.time + startOffset) / secondsPerDegree;
             float minuteHandAngle = hourHandAngle * 12;
@@ -83,6 +92,14 @@ public class ClockTurner : MonoBehaviour
         }
 
 
+        /// <summary>
+        /// Move the hands by a provided time providers raw output, no scaling applied.  
+        /// 
+        /// This is good if you have a time provider that derives its time from a 
+        /// class that models in-world time that is already scaled.
+        /// 
+        /// Intended to assigned to and used as a delegate.
+        /// </summary>
         private void MoveHandsByRawTime() {
             float hourHandAngle = (timeProvider.GetTime() + startOffset) / secondsPerDegree;
             float minuteHandAngle = hourHandAngle * 12;
@@ -91,6 +108,15 @@ public class ClockTurner : MonoBehaviour
         }
 
 
+        /// <summary>
+        /// Moves hands based on time from a time provided, and also scales it. 
+        /// 
+        /// If you are using some kind of time provider that doesn't provide scaling 
+        /// (or if you want a specific clock scaled differently) this is the method 
+        /// to assign to the delegate.
+        /// 
+        /// Intended to assigned to and used as a delegate.
+        /// </summary>
         private void MoveHandsByScaledTime() {
             float hourHandAngle = timeProvider.GetTime() / 30;
             float minuteHandAngle = hourHandAngle * 12;
@@ -99,18 +125,27 @@ public class ClockTurner : MonoBehaviour
         }
 
 
+        /// <summary>
+        /// The same as MoveHandByUnityTime(), but it also will move a pendulum.
+        /// </summary>
         private void MoveHandsByUnityTimePendulum() {
             MoveHandsByUnityTime();
             pendulum.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Sin(Time.time % 360) * maxPendulumSwing);
         }
 
 
+        /// <summary>
+        /// The same as MoveHandsByRawTime(), but it also will move a pendulum.
+        /// </summary>
         private void MoveHandsByRawTimePendulum() {
             MoveHandsByRawTime();
             pendulum.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Sin(Time.time % 360) * maxPendulumSwing);
         }
 
 
+        /// <summary>
+        /// The same as MoveHandByScaledTime(), but it will also move a pendulum.
+        /// </summary>
         private void MoveHandsByScaledTimePendulum() {
             MoveHandsByScaledTime();
             pendulum.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Sin(Time.time % 360) * maxPendulumSwing);

@@ -2,6 +2,16 @@ using System;
 
 namespace kfutils
 {
+    /// <summary>
+    /// And RNG using the Xorshift generation algorithm.
+    /// 
+    /// This is for situations where you may need to get random 
+    /// numbers separately from those used for gameplay, want 
+    /// to use a set seed for a consistent sequence across runs, 
+    /// want to allow the player to be able to set a seed, and 
+    /// other situations where using the standard Unity Random 
+    /// object may not be desired.
+    /// </summary>
     public class Xorshift
     {
         private ulong seed;

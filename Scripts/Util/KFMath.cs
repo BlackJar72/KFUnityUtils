@@ -23,10 +23,23 @@ namespace kfutils {
 
 
         /// <summary>
-        /// A convenience method, but one probably better coded locally in
-        /// most situations for efficiency (at least in intended uses).  In
-        /// some ways this is a reminder, but could be handy in non-performance
-        /// critical code.
+        /// Causes the input to start asymptoting at the number given as start, 
+        /// such that the output would start + rate at n = infinity, and each 
+        /// having of the difference between the outpur and start + rate and will 
+        /// reqiore doubling the difference between start and n.
+        /// 
+        /// For value of n less than start the output will be n, with n = start 
+        /// producing the same results for either formula so as to create a 
+        /// continuous curve.
+        /// 
+        /// This was first developed to avoid sudden height cut-off on precedurally 
+        /// generated mountains that might otherwise produce conspicuously unnatural 
+        /// looking fast tops if exceeding a height limit.
+        /// 
+        /// It has since been used effectively to soft-cap armor in the health and 
+        /// damage system included in the "Damage System" folder.  It was also used 
+        /// to soft cap difficulty in the Cavern Of Evil "NG+" levels. It could be  
+        /// useful for applying a soft cap to anything, really.
         ///
         /// n is the number being converted to an asymptopic form.
         /// start is the place where the output should start to curve.
@@ -48,10 +61,23 @@ namespace kfutils {
 
 
         /// <summary>
-        /// A convenience method, but one probably better coded locally in
-        /// most situations for efficiency (at least in intended uses).  In
-        /// some ways this is a reminder, but could be handy in non-performance
-        /// critical code.
+        /// Causes the input to start asymptoting at the number given as start, 
+        /// such that the output would start + rate at n = infinity, and each 
+        /// having of the difference between the outpur and start + rate and will 
+        /// reqiore doubling the difference between start and n.
+        /// 
+        /// For value of n less than start the output will be n, with n = start 
+        /// producing the same results for either formula so as to create a 
+        /// continuous curve.
+        /// 
+        /// This was first developed to avoid sudden height cut-off on precedurally 
+        /// generated mountains that might otherwise produce conspicuously unnatural 
+        /// looking fast tops if exceeding a height limit.
+        /// 
+        /// It has since been used effectively to soft-cap armor in the health and 
+        /// damage system included in the "Damage System" folder.  It was also used 
+        /// to soft cap difficulty in the Cavern Of Evil "NG+" levels. It could be  
+        /// useful for applying a soft cap to anything, really. 
         ///
         /// n is the number being converted to an asymptopic form.
         /// start is the place where the output should start to curve.
@@ -95,7 +121,7 @@ namespace kfutils {
 
 
         /// <summary>
-        /// This will convert a string to a long for use as a seed for random number generation.
+        /// This will convert a string to a ulong for use as a seed for random number generation.
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -116,7 +142,7 @@ namespace kfutils {
 
 
         /// <summary>
-        /// This will convert a string to a long for use as a seed for random number generation.
+        /// This will convert a string to an int for use as a seed for random number generation.
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
