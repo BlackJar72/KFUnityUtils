@@ -20,6 +20,9 @@ namespace kfutils
     /// Elements can be removed (but not added) to the middle of the deque, though this 
     /// is not how it is typcally meant to be used.  Adding to the middle is not allowed 
     /// as it would not be clear which end to ovewrite if full. 
+    /// 
+    /// The original purpose was to store queue actions chosen by a game AI, specifically 
+    /// a utility AI (think of how actions are queued by sim characters in a Sims game).
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class RingDeque<T> : IEnumerable<T>, ICollection<T>

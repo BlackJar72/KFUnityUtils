@@ -27,7 +27,8 @@ namespace kfutils {
     /// ordered dynamic array types like Lists, which must copy all subsequent entries to maintain oder. 
     /// 
     /// It should fascillitate faster removal, especially with long data sets, in situation when the 
-    /// oder is not important but it must also function like a list. 
+    /// oder is not important but it must otherwise function like a list, usually by having its members 
+    /// iterated. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class Unordered<T> : IEnumerable<T>, ICollection<T>, IList<T>
@@ -73,6 +74,9 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Expand the backing array if running out of room.
+        /// </summary>
         private void Expand()
         {
             T[] bigger = new T[(data.Length * 3) / 2];
@@ -81,6 +85,10 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Shrink the backing array if the count becomes much smaller 
+        /// than its length.
+        /// </summary>
         private void Shrink()
         {            
             T[] smaller = new T[Math.Max(data.Length / 2, minSize)];
@@ -116,8 +124,20 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Get without bounds checking; the backing array may still throw and 
+        /// exception if overrun, but the count is not checked. 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetUnsafe(int index) => data[index];
+        public T GetUnsafe(int index) => data[index];/// <summary>
+        /// Set without bounds checking; the backing array may still throw and 
+        /// exception if overrun, but the count is not checked. 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetUnsafe(int index, T value) => data[index] = value;
 
@@ -125,7 +145,7 @@ namespace kfutils {
         [Pure] public int Count => count;
 
 
-        public bool IsReadOnly => false;
+        [Pure] public bool IsReadOnly => false;
 
 
         /// <summary>
@@ -169,6 +189,12 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Copy the data to the provided array starting at arrayIndex.  This will 
+        /// copy everything that will fit.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="arrayIndex"></param>
         public void CopyTo(T[] array, int arrayIndex)
         {
             int number = Math.Max(0, Math.Min(count, array.Length - arrayIndex));
@@ -355,6 +381,11 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Return a shallow copy of the data as a new array whose length is equal 
+        /// to the current count.
+        /// </summary>
+        /// <returns></returns>
         public T[] ToArray()
         {
             T[] result = new T[count];
@@ -363,6 +394,10 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Return a shallow copy of the data as a standard C# List.
+        /// </summary>
+        /// <returns></returns>
         public List<T> ToList()
         {
             List<T> result = new(count);

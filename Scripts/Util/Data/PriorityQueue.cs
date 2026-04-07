@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 
@@ -26,12 +27,22 @@ namespace kfutils {
     /// result. Also, it seems like a good learning exercise to improve 
     /// my knowledge of algorithms.
     /// 
+    /// For any not familiar with priority queues, they return the item 
+    /// with the lowest (or sometimes highest) value first without fully 
+    /// sorting the items; a binary heap being a data structure than 
+    /// naturally functions as a priority queue.
+    /// 
+    /// This implementation will alway return the lowest value (or first in 
+    /// a natural sort order) first.  This the most common type and what 
+    /// is usually needed.  If the reverse is needed the CompareTo method 
+    /// must be invereted (either directly or through a wrapping class).
+    /// 
     /// Examples of algorithms using priority queues include A* pathfinding, 
-    /// heep sort, Prims least spanning tree algorithm, Hoffman compression,
-    /// and various others (only considering those already invented). Both 
-    /// Doomlike Dungeons and Caverns of Evil use priority queues, through 
-    /// custum A* implementations, as part of their quality control pass in 
-    /// generating dungeons / levels.
+    /// heep sort, Prim's minimum spanning tree algorithm, Huffman encoding 
+    /// (compression), and various others (only considering those already  
+    /// invented). Both Doomlike Dungeons and Caverns Of Evil use priority  
+    /// queues, through custum A* implementations, as part of their quality  
+    /// control pass in proceduarlly generating dungeons / levels.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class PriorityQueue<T> : IEnumerable<T> where T : IComparable 
@@ -42,18 +53,18 @@ namespace kfutils {
         private const int MIN_SIZE = 16;
         private readonly int minSize;
 
-        public int Count => count;
-        public bool IsEmpty => count < 1;
-        public bool NotEmpty => count > 0;
+        [Pure] public int Count => count;
+        [Pure] public bool IsEmpty => count < 1;
+        [Pure] public bool NotEmpty => count > 0;
 
-        public bool IsReadOnly => false;
+        [Pure] public bool IsReadOnly => false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        private int GetParent(int i) => (i - 1) / 2;
+        [Pure] private int GetParent(int i) => (i - 1) / 2;
         [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        private int GetLeft(int i) => (i * 2) + 1;  // Left child
+        [Pure] private int GetLeft(int i) => (i * 2) + 1;  // Left child
         [MethodImpl(MethodImplOptions.AggressiveInlining)] 
-        private int GetRight(int i) => (i * 2) + 2; // Right child
+        [Pure] private int GetRight(int i) => (i * 2) + 2; // Right child
         
 
 
@@ -65,6 +76,9 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Expand the backing array if running out of room.
+        /// </summary>
         private void Expand()
         {
             T[] bigger = new T[data.Length * 2];
@@ -73,6 +87,10 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Shrink the backing array if the count becomes much smaller 
+        /// than its length.
+        /// </summary>
         private void Shrink()
         {            
             T[] smaller = new T[Math.Max(data.Length / 2, minSize)];
@@ -81,10 +99,19 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Return the first item in the priority queue without removing it. 
+        /// The queue does not change.
+        /// </summary>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)] 
         public T Peek() => data[0];
 
 
+        /// <summary>
+        /// Add an item to the priority queue. 
+        /// </summary>
+        /// <param name="item"></param>
         public void Add(T item)
         {
             if(count >= data.Length) Expand();
@@ -92,10 +119,21 @@ namespace kfutils {
             MoveUp(count);
             count++;
         }
+
+
+        /// <summary>
+        /// A synonym for add, for those who prefer more stack like language 
+        /// mirroring the use of the terms Peek and Pop for other methods.
+        /// </summary>
+        /// <param name="item"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)] 
         public void Push(T item) => Add(item);
 
 
+        /// <summary>
+        /// Removes the first item in the priority queue and returns it. 
+        /// </summary>
+        /// <returns></returns>
         public T Pop()
         {
             if(count < 1) return default(T);
@@ -108,6 +146,9 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Remove all entries from the priority queue.
+        /// </summary>
         public void Clear()
         {
             count = 0;
@@ -115,6 +156,10 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Method internal to the priority queue, for maintaining the heap.
+        /// </summary>
+        /// <param name="i"></param>
         private void MoveUp(int i)
         {
             T tmp = data[i];
@@ -126,6 +171,10 @@ namespace kfutils {
         } 
 
 
+        /// <summary>
+        /// Method internal to the priority queue, for maintaining the heap.
+        /// </summary>
+        /// <param name="i"></param>
         private void MoveDown(int i)
         {
             T tmp = data[i];
@@ -146,6 +195,10 @@ namespace kfutils {
         /****************************************************************************/
 
 
+        /// <summary>
+        /// Returns a string representing the data in the priority queue.
+        /// </summary>
+        /// <returns></returns>
        public override string ToString()
         {
             System.Text.StringBuilder builder = new("[");
@@ -159,6 +212,10 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Returns a shallow copy of the data in the priority queue as a new array.
+        /// </summary>
+        /// <returns></returns>
         public T[] ToArray()
         {
             T[] result = new T[count];
@@ -167,6 +224,10 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Returns a shallow copy of the data in the priority queue as a new standard List.
+        /// </summary>
+        /// <returns></returns>
         public List<T> ToList()
         {
             List<T> result = new(count);
@@ -175,6 +236,12 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Returns an enumaerator over the backing array from 0 to count - 1; 
+        /// that is, all elements actually containting valid data for the 
+        /// priotity queue.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
             for (int i = 0; i < count; i++ )
@@ -185,6 +252,13 @@ namespace kfutils {
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 
+        /// <summary>
+        /// Returns true, if the priority queue has at least one entry 
+        /// equal to item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns>true if item is in the priority queue at least once, false 
+        /// otherwise</returns>
         public bool Contains(T item)
         {
             for(int i = 0; i < count; i++)
@@ -195,6 +269,12 @@ namespace kfutils {
         }
 
 
+        /// <summary>
+        /// Copies data from the backing array into the provided array starting 
+        /// at arrayIndex until reaching the end of either array.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="arrayIndex"></param>
         public void CopyTo(T[] array, int arrayIndex)
         {
             int number = Math.Max(0, Math.Min(count, array.Length - arrayIndex));
