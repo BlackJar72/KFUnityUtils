@@ -24,9 +24,7 @@ namespace kfutils {
         /// TLDR: APPLIES A "SOFT CAP."
         /// 
         /// Causes the input to start asymptoting at the number given as start, 
-        /// such that the output would start + rate at n = infinity, and each 
-        /// having of the difference between the outpur and start + rate and will 
-        /// reqiore doubling the difference between start and n.
+        /// such that the output would start + rate at n = infinity.
         /// 
         /// For value of n less than start the output will be n, with n = start 
         /// producing the same results for either formula so as to create a 
@@ -64,9 +62,7 @@ namespace kfutils {
         /// TLDR: APPLIES A "SOFT CAP."
         /// 
         /// Causes the input to start asymptoting at the number given as start, 
-        /// such that the output would start + rate at n = infinity, and each 
-        /// having of the difference between the outpur and start + rate and will 
-        /// reqiore doubling the difference between start and n.
+        /// such that the output would start + rate at n = infinity.
         /// 
         /// For value of n less than start the output will be n, with n = start 
         /// producing the same results for either formula so as to create a 
