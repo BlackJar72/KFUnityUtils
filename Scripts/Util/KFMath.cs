@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
 
 
 namespace kfutils {
@@ -17,12 +16,13 @@ namespace kfutils {
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static int ModRight(int a, int b) {
-            return (a & 0x7fffffff) % b;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] [Pure] 
+        public static int ModRight(int a, int b) => (a & 0x7fffffff) % b;
 
 
         /// <summary>
+        /// TLDR: APPLIES A "SOFT CAP."
+        /// 
         /// Causes the input to start asymptoting at the number given as start, 
         /// such that the output would start + rate at n = infinity, and each 
         /// having of the difference between the outpur and start + rate and will 
@@ -45,11 +45,11 @@ namespace kfutils {
         /// start is the place where the output should start to curve.
         /// rate is the reciprical of the value it should approach minus the start.
         /// </summary>
-        /// <param name="n"></param>
-        /// <param name="start"></param>
-        /// <param name="rate"></param>
-        /// <returns></returns>
-        public static float Asymptote(float n, float start, float rate) {
+        /// <param name="n">The value being asymptotically soft capped.</param>
+        /// <param name="start">And offset represent the point where the soft cap begins</param>
+        /// <param name="rate">How far past start the result would be at n = infinity</param>
+        /// <returns>The soft capped value</returns>
+        [Pure] public static float Asymptote(float n, float start, float rate) {
             if(n > start) {
                 float output = (n - start) / rate;
                 output = 1 - (1 / (output + 1));
@@ -61,6 +61,8 @@ namespace kfutils {
 
 
         /// <summary>
+        /// TLDR: APPLIES A "SOFT CAP."
+        /// 
         /// Causes the input to start asymptoting at the number given as start, 
         /// such that the output would start + rate at n = infinity, and each 
         /// having of the difference between the outpur and start + rate and will 
@@ -83,12 +85,11 @@ namespace kfutils {
         /// start is the place where the output should start to curve.
         /// rate is the reciprical of the value it should approach minus the start.
         ///
-        /// </summary>
-        /// <param name="n"></param>
-        /// <param name="start"></param>
-        /// <param name="rate"></param>
-        /// <returns></returns>
-        public static double Asymptote(double n, double start, double rate) {
+        /// <param name="n">The value being asymptotically soft capped.</param>
+        /// <param name="start">And offset represent the point where the soft cap begins</param>
+        /// <param name="rate">How far past start the result would be at n = infinity</param>
+        /// <returns>The soft capped value</returns>
+        [Pure] public static double Asymptote(double n, double start, double rate) {
             if(n > start) {
                 double output = (n - start) / rate;
                 output = 1 - (1 / (output + 1));
