@@ -187,7 +187,7 @@ namespace kfutils {
         public static bool operator ==(int b, DamageModInstance a) => a.id == b;
         public static bool operator !=(int b, DamageModInstance a) => !(a.id == b);
 
-        public override bool Equals(object? other) {
+        public override bool Equals(object other) {
             if(other is DamageModInstance) return ((DamageModInstance)other).id == id;
             else if(other is string) return ((long)other.GetHashCode()) == id;
             else if((other is long) || (other is int)) return id == (long)other;
@@ -208,7 +208,7 @@ namespace kfutils {
         public DamageType Type => type;
         public string ID => id;
         public bool Equals(DamageModSource other) => id.Equals(other.id);
-        public override bool Equals(object? other) => (other is DamageModSource) && id.Equals(((DamageModSource)other).id);
+        public override bool Equals(object other) => (other is DamageModSource) && id.Equals(((DamageModSource)other).id);
         public static bool operator ==(DamageModSource a, DamageModSource b) => a.id.Equals(b.id);
         public static bool operator !=(DamageModSource a, DamageModSource b) => !a.id.Equals(b.id);
         public override int GetHashCode() => id.GetHashCode();
@@ -227,7 +227,9 @@ namespace kfutils {
             } else {
                 // for effects from generic sources, such as spells or potions, which may be created more than once or
                 // from different sources
+#pragma warning disable CS0675 // Bitwise-or operator used on a sign-extended operand
                 return new DamageModInstance(amount, type, id.GetHashCode() | (((long)Time.time) << 32));
+#pragma warning restore CS0675 // Bitwise-or operator used on a sign-extended operand
             }
         }
     }
