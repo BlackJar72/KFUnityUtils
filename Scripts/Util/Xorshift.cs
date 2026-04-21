@@ -26,6 +26,59 @@ namespace kfutils
         }
 
 
+        public Xorshift(long seed)
+        {
+            val = this.seed = (ulong)seed;
+            nextGaussian = float.NaN;
+        }
+
+
+        public Xorshift(int seed)
+        {
+            val = this.seed = (ulong)seed;
+            nextGaussian = float.NaN;
+        }
+
+
+        public Xorshift(uint seed)
+        {
+            val = this.seed = seed;
+            nextGaussian = float.NaN;
+        }
+
+
+        public Xorshift(string seed)
+        {
+            // If no seed is given, treat as no-parameter constructor
+            if(string.IsNullOrEmpty(seed))
+            {
+                val = this.seed = (ulong)System.DateTime.Now.Ticks;
+                nextGaussian = float.NaN;
+                return;
+            }
+            // If seed is a string representation of an integral number, assign that number;
+            // negatives will become positives by having the sign bit treated as a normal bit 
+            // (casting negatives to ulong).
+            ulong theSeed;
+            try {
+                theSeed = ulong.Parse(seed);
+            } 
+            catch
+            {
+                try {
+                    theSeed = (ulong)long.Parse(seed);
+                } 
+                // Otherwise use the hash of the string as the seed
+                catch
+                {
+                    theSeed = (ulong)seed.GetHashCode();
+                }
+            }
+            val = this.seed = theSeed;
+            nextGaussian = float.NaN;
+        }
+
+
         public Xorshift()
         {
             val = seed = (ulong)System.DateTime.Now.Ticks;
