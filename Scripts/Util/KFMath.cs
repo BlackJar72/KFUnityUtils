@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
@@ -89,6 +90,68 @@ namespace kfutils {
             if(n > start) {
                 double output = (n - start) / rate;
                 output = 1 - (1 / (output + 1));
+                output = (output * rate) + start;
+                return output;
+            }
+            return n;
+        }
+
+
+
+        /// <summary>
+        /// An alternate assymtote function, I probably won't be using it in typical code, but I want it 
+        /// documented for future porting, perhaps to HLSL or GLSL be used in shaders.  I wonder if something
+        /// like this could be used to improved parallax displacement shaders.
+        /// 
+        /// Base on the function
+        /// f(x) = x / (1 + abs(x))
+        /// 
+        /// https://gist.github.com/BlackJar72/1ceff3a726d18a986ba47262a5585905
+        ///  
+        /// </summary>
+        /// <param name="n"></param>
+        /// <param name="start"></param>
+        /// <param name="rate"></param>
+        /// <returns></returns>
+        [Pure] public static float FastSigmoid(float n, float start, float rate) {
+            if(n > start) {
+                // Transforms the scale, hopefully; I need to thrink this part through and test it
+                float output = (n - start) / rate;
+                // Creates and signmoid output, representing the function:   f(x) = x / (1 + abs(x))  
+                // 0 => 0, 1 => 0.5, -1 => -0.5, and with 1 and -1 approached as positive and negative infinity respectively
+                output = output / (1 + Math.Abs(output));
+                // Reverses the previous transform to the original scale and start
+                output = (output * rate) + start;
+                return output;
+            }
+            return n;
+        }
+
+
+
+        /// <summary>
+        /// An alternate assymtote function, I probably won't be using it in typical code, but I want it 
+        /// documented for future porting, perhaps to HLSL or GLSL be used in shaders.  I wonder if something
+        /// like this could be used to improved parallax displacement shaders.
+        /// 
+        /// Base on the function
+        /// f(x) = x / (1 + abs(x))
+        /// 
+        /// https://gist.github.com/BlackJar72/1ceff3a726d18a986ba47262a5585905
+        ///  
+        /// </summary>
+        /// <param name="n"></param>
+        /// <param name="start"></param>
+        /// <param name="rate"></param>
+        /// <returns></returns>
+        [Pure] public static double FastSigmoid(double n, double start, double rate) {
+            if(n > start) {
+                // Transforms the scale, hopefully; I need to thrink this part through and test it
+                double output = (n - start) / rate;
+                // Creates and signmoid output, representing the function:   f(x) = x / (1 + abs(x))  
+                // 0 => 0, 1 => 0.5, -1 => -0.5, and with 1 and -1 approached as positive and negative infinity respectively
+                output = output / (1 + Math.Abs(output));
+                // Reverses the previous transform to the original scale and start
                 output = (output * rate) + start;
                 return output;
             }
