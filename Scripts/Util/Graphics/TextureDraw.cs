@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -45,8 +46,15 @@ namespace kfutils
         public static void SaveAsset(this Texture2D texture)
         {
             AssetDatabase.SaveAssetIfDirty(texture);
-            AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+
+
+        public static void SaveAsPNG(this Texture2D texture, string path)
+        {
+            byte[] bytes = ImageConversion.EncodeToPNG(texture);
+            if(!path.EndsWith(".png")) path += ".png";
+            File.WriteAllBytes(Application.dataPath + path, bytes);
         }
 
 
