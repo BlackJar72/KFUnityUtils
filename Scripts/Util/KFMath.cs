@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 
 
 namespace kfutils {
@@ -218,6 +219,42 @@ namespace kfutils {
                 output = strSeed.GetHashCode();
             }
             return output;
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] [Pure] 
+        public static float Distance(float x1, float y1, float x2, float y2)
+        {
+            float dx = x1 - x2;
+            float dy = y1 - y2;
+            return Mathf.Sqrt((dx * dx) + (dy * dy));
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] [Pure] 
+        public static double Distance(double x1, double y1, double x2, double y2)
+        {
+            double dx = x1 - x2;
+            double dy = y1 - y2;
+            return Math.Sqrt((dx * dx) + (dy * dy));
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] [Pure] 
+        public static float SquareDistance(float x1, float y1, float x2, float y2)
+        {
+            float dx = x1 - x2;
+            float dy = y1 - y2;
+            return (dx * dx) + (dy * dy);
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] [Pure] 
+        public static double SquareDistance(double x1, double y1, double x2, double y2)
+        {
+            double dx = x1 - x2;
+            double dy = y1 - y2;
+            return (dx * dx) + (dy * dy);
         }
 
     }
