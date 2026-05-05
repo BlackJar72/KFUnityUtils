@@ -34,6 +34,22 @@ namespace kfutils
         }
 
 
+        public static void SaveAsAsset(this Texture2D texture, string path)
+        {
+            AssetDatabase.CreateAsset(texture, path);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+
+        public static void SaveAsset(this Texture2D texture)
+        {
+            AssetDatabase.SaveAssetIfDirty(texture);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+
         public static void DrawRectangleSolid(this Texture2D texture, RectInt rect, Color color)
         {
             for(int i = rect.xMin; i < rect.xMax; i++)
@@ -42,14 +58,6 @@ namespace kfutils
                     texture.SetPixel(i, j, color);
                 } 
             texture.Apply();
-        }
-
-
-        public static void SaveAsAsset(this Texture2D texture, string path)
-        {
-            AssetDatabase.CreateAsset(texture, path);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
         }
 
 
