@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
 using UnityEngine;
 
 
-namespace kfutils {
+namespace kfutils.health {
 
     [Serializable]
     public class EntityHealth {
@@ -142,7 +140,7 @@ namespace kfutils {
 
 
     public class DefaultDamageAdjuster : IDamageAdjuster {
-        public Damages Apply(kfutils.Damages damage) {
+        public Damages Apply(kfutils.health.Damages damage) {
             return default(Damages);
         }
     }

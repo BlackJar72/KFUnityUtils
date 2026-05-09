@@ -1,10 +1,4 @@
-using System;
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
-
-namespace kfutils {
+namespace kfutils.health {
 
     #region DamageAdjust
     /// <summary>
