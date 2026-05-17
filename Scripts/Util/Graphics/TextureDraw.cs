@@ -62,7 +62,7 @@ namespace kfutils
         {
             byte[] bytes = ImageConversion.EncodeToPNG(texture);
             if(!path.ToLower().EndsWith(".png")) path += ".png";
-            if(kfutils.PathUtils.IsDirectorySeparator(path[0]))  File.WriteAllBytes(path, bytes);
+            if(Path.IsPathFullyQualified(path)) File.WriteAllBytes(path, bytes);
             else File.WriteAllBytes(Application.dataPath + path, bytes);
         }
 
@@ -71,7 +71,7 @@ namespace kfutils
         {
             byte[] bytes = ImageConversion.EncodeToJPG(texture);
             if(!(path.ToLower().EndsWith(".jpg") || path.ToLower().EndsWith(".jpeg"))) path += ".jpg";
-            if(kfutils.PathUtils.IsDirectorySeparator(path[0]))  File.WriteAllBytes(path, bytes);
+            if(Path.IsPathFullyQualified(path)) File.WriteAllBytes(path, bytes);
             else File.WriteAllBytes(Application.dataPath + path, bytes);
         }
 
