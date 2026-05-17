@@ -40,7 +40,9 @@ namespace kfutils
         {
             AssetDatabase.CreateAsset(texture, path);
             AssetDatabase.SaveAssets();
-            SaveAsPNG(texture, Directory.GetParent((Application.dataPath)).FullName + path);
+            if(Path.GetExtension(path).ToLower().Contains("jp")) 
+                SaveAsJPG(texture, Directory.GetParent((Application.dataPath)).FullName + path);
+            else SaveAsPNG(texture, Directory.GetParent((Application.dataPath)).FullName + path);
             AssetDatabase.Refresh();
         }
 
@@ -50,7 +52,8 @@ namespace kfutils
             AssetDatabase.SaveAssetIfDirty(texture);
             string path = Directory.GetParent((Application.dataPath)).FullName 
                         + Path.DirectorySeparatorChar + AssetDatabase.GetAssetPath(texture);
-            SaveAsPNG(texture, path);
+            if(Path.GetExtension(path).ToLower().Contains("jp")) SaveAsJPG(texture, path);
+            else SaveAsPNG(texture, path);
             AssetDatabase.Refresh();
         }
 
@@ -58,7 +61,16 @@ namespace kfutils
         public static void SaveAsPNG(this Texture2D texture, string path)
         {
             byte[] bytes = ImageConversion.EncodeToPNG(texture);
-            if(!path.EndsWith(".png")) path += ".png";
+            if(!path.ToLower().EndsWith(".png")) path += ".png";
+            if(kfutils.PathUtils.IsDirectorySeparator(path[0]))  File.WriteAllBytes(path, bytes);
+            else File.WriteAllBytes(Application.dataPath + path, bytes);
+        }
+
+
+        public static void SaveAsJPG(this Texture2D texture, string path)
+        {
+            byte[] bytes = ImageConversion.EncodeToJPG(texture);
+            if(!(path.ToLower().EndsWith(".jpg") || path.ToLower().EndsWith(".jpeg"))) path += ".jpg";
             if(kfutils.PathUtils.IsDirectorySeparator(path[0]))  File.WriteAllBytes(path, bytes);
             else File.WriteAllBytes(Application.dataPath + path, bytes);
         }
