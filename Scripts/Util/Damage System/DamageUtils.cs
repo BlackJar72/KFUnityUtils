@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 
-namespace kfutils.health {
+namespace kfutils {
 
     [System.Serializable]
     [Flags]
