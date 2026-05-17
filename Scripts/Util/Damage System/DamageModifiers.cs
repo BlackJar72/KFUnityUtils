@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 
-namespace kfutils {
+namespace kfutils.health {
 
     /// This is a second system of damage adjustment intendended to rpresent temporary (or, more broadly, non-inherent)
     /// resistances and vulnerabilities, such as those granted by spells, potions, or gear.
@@ -16,7 +15,7 @@ namespace kfutils {
 
         [SerializeField] List<DamageModInstance> modifiers = new List<DamageModInstance>();
 
-        public Damages Apply(kfutils.Damages damage) {
+        public Damages Apply(kfutils.health.Damages damage) {
             float resist = 0f;
             float weakness = 0f;
             float result;

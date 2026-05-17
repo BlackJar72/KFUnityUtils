@@ -1,13 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
 using UnityEngine;
 
 
-namespace kfutils {
+namespace kfutils.health {
 
     [Serializable]
     public class EntityHealth {
+
+        public const double HEALING_PAUSE_TIME = 5.0; // in seconds
+        public const double BASE_REGEN_RATE = 1.0;
+        public const double BASE_REGEN_ADJUST = 0.01;
+        
         public static readonly DefaultDamageAdjuster defaultDamageAdjuster = new DefaultDamageAdjuster();
 
         [SerializeField] float baseHealth;
@@ -129,8 +132,9 @@ namespace kfutils {
         /// This may be called by the regrn coroutine, or perhaps recreated in it, or even
         /// have the coroutine moved here...?
         /// </summary>
+
         public bool NaturalRegen() {
-            shock = Mathf.Min((shock + ((baseHealth * 0.01f) + 1.0f) * Time.deltaTime), baseHealth);
+            shock = Mathf.Min((float)(shock + ((baseHealth * BASE_REGEN_ADJUST) + BASE_REGEN_RATE) * Time.deltaTime), baseHealth);
             return shock < baseHealth;
         }
 
@@ -142,7 +146,7 @@ namespace kfutils {
 
 
     public class DefaultDamageAdjuster : IDamageAdjuster {
-        public Damages Apply(kfutils.Damages damage) {
+        public Damages Apply(kfutils.health.Damages damage) {
             return default(Damages);
         }
     }
