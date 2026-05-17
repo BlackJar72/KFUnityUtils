@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace kfutils
 {
@@ -39,6 +40,7 @@ namespace kfutils
         {
             AssetDatabase.CreateAsset(texture, path);
             AssetDatabase.SaveAssets();
+            SaveAsPNG(texture, Directory.GetParent((Application.dataPath)).FullName + path);
             AssetDatabase.Refresh();
         }
 
@@ -46,6 +48,9 @@ namespace kfutils
         public static void SaveAsset(this Texture2D texture)
         {
             AssetDatabase.SaveAssetIfDirty(texture);
+            string path = Directory.GetParent((Application.dataPath)).FullName 
+                        + Path.DirectorySeparatorChar + AssetDatabase.GetAssetPath(texture);
+            SaveAsPNG(texture, path);
             AssetDatabase.Refresh();
         }
 
@@ -54,7 +59,8 @@ namespace kfutils
         {
             byte[] bytes = ImageConversion.EncodeToPNG(texture);
             if(!path.EndsWith(".png")) path += ".png";
-            File.WriteAllBytes(Application.dataPath + path, bytes);
+            if(kfutils.PathUtils.IsDirectorySeparator(path[0]))  File.WriteAllBytes(path, bytes);
+            else File.WriteAllBytes(Application.dataPath + path, bytes);
         }
 
 
