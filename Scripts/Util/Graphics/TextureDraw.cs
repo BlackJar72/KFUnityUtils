@@ -66,7 +66,7 @@ namespace kfutils
         {
             string path = Directory.GetParent((Application.dataPath)).FullName 
                         + Path.DirectorySeparatorChar + AssetDatabase.GetAssetPath(texture);
-            if(Path.GetExtension(path).ToLower().EndsWith("jpg") || Path.GetExtension(path).ToLower().EndsWith("jpeg")) 
+            if(Path.GetExtension(path).ToLower().EndsWith(".jpg") || Path.GetExtension(path).ToLower().EndsWith(".jpeg")) 
             {
                 byte[] bytes = ImageConversion.EncodeToJPG(texture);
                 if(Path.IsPathRooted(path)) File.WriteAllBytes(path, bytes);
