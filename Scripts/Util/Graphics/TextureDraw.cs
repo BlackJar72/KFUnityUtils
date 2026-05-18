@@ -36,6 +36,13 @@ namespace kfutils
         }
 
 
+        /// <summary>
+        /// Saves the texture at the give path, as either a PNG or JPEG, based on the file extension. 
+        /// If the file extension is missing or incorrect, the file will be saved as a PNG, and a .png 
+        /// extension will be added.
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="path"></param>
         public static void SaveAsAsset(this Texture2D texture, string path)
         {
             if(Path.GetExtension(path).ToLower().Contains("jp")) 
@@ -45,16 +52,42 @@ namespace kfutils
         }
 
 
+        /// <summary>
+        /// Saves the texture asset to the file system, replacing the existing file.
+        /// 
+        /// This saves a texture at its current path, over wrighting the current file. It will save 
+        /// as PNG or JPEG base on file extension.  If the exenstion is missing or incorrect 
+        /// (for either PNG or JPEG) it will default to the PNG format, but will not change the 
+        /// file name as this would not replace the existing file (with is the purpose of this 
+        /// method). 
+        /// </summary>
+        /// <param name="texture"></param>
         public static void SaveAsset(this Texture2D texture)
         {
             string path = Directory.GetParent((Application.dataPath)).FullName 
                         + Path.DirectorySeparatorChar + AssetDatabase.GetAssetPath(texture);
-            if(Path.GetExtension(path).ToLower().Contains("jp")) SaveAsJPG(texture, path);
-            else SaveAsPNG(texture, path);
+            if(Path.GetExtension(path).ToLower().EndsWith("jpg") || Path.GetExtension(path).ToLower().EndsWith("jpeg")) 
+            {
+                byte[] bytes = ImageConversion.EncodeToJPG(texture);
+                if(Path.IsPathRooted(path)) File.WriteAllBytes(path, bytes);
+                else File.WriteAllBytes(Application.dataPath + path, bytes);
+            }
+            else
+            {
+                byte[] bytes = ImageConversion.EncodeToPNG(texture);
+                if(Path.IsPathRooted(path)) File.WriteAllBytes(path, bytes);
+                else File.WriteAllBytes(Application.dataPath + path, bytes);
+            }
             AssetDatabase.Refresh();
         }
 
 
+        /// <summary>
+        /// Saves the texture as a PNG at the given path. If the file extension 
+        /// is absent or not .png, it will add .png to the file name.
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="path"></param>
         public static void SaveAsPNG(this Texture2D texture, string path)
         {
             byte[] bytes = ImageConversion.EncodeToPNG(texture);
@@ -64,6 +97,12 @@ namespace kfutils
         }
 
 
+        /// <summary>
+        /// Saves the texture as a JPEG at the given path.  If the file extension is absent 
+        /// or not either .jpg or .jpeg, it will add .jpg to the end of the file name.
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="path"></param>
         public static void SaveAsJPG(this Texture2D texture, string path)
         {
             byte[] bytes = ImageConversion.EncodeToJPG(texture);
