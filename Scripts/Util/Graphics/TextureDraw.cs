@@ -8,6 +8,9 @@ namespace kfutils
 
     public static class TextureDraw
     {
+        public const float TWO_PI = Mathf.PI * 2.0f; 
+
+
         public static Texture2D GetMainTexture(this GameObject go)
         {            
             Renderer renderer = go.GetComponent<Renderer>();
@@ -140,15 +143,18 @@ namespace kfutils
 
         public static void DrawCircleSolid(this Texture2D texture, int x, int y, int r, Color color)
         {
-            int startX = x - r;
-            int startY = y - r;
-            int endX = x + r;
-            int endY = y + r;
-            for(int i = startX; i < endX; i++)
-                for(int j = startY; j < endY; j++)
+            int rsq = r * r;
+            for(int i = 0; i < r; i++)
+                for(int j = 0; j < r; j++)
                 {
-                    if(((int)KFMath.Distance(x, y, i, j)) <= r) texture.SetPixel(i, j, color);
+                    if(((i * i) + (j * j)) < rsq) {
+                        texture.SetPixel(x + i, y + j, color);
+                        texture.SetPixel(x + i, y - j, color);
+                        texture.SetPixel(x - i, y - j, color);
+                        texture.SetPixel(x - i, y + j, color);
+                    }
                 } 
+            texture.DrawCircleHollow(x, y, r, color);
             texture.Apply();
         }
 
@@ -164,43 +170,56 @@ namespace kfutils
                 texture.SetPixel(x - i, y - j, color);
                 texture.SetPixel(x + i, y - j, color);
                 texture.SetPixel(x - i, y + j, color);
+                texture.SetPixel(x + j, y + i, color);
+                texture.SetPixel(x - j, y - i, color);
+                texture.SetPixel(x + j, y - i, color);
+                texture.SetPixel(x - j, y + i, color);
             }
             texture.Apply();
         }
 
 
         public static void DrawLineSegment(this Texture2D texture, Vector2Int start, Vector2Int end, Color color)
-        {
-            int x = start.x;
-            int y = start.y;
-            int dx = Mathf.Abs(end.x - start.x);
-            int sx = start.x < end.x ? 1 : -1;
-            int dy = -Mathf.Abs(end.y - start.y);
-            int sy = start.y < end.y ? 1 : -1;
-            int error1 = dx + dy;
-            int error2 = 0;
-            while(true)
+        {    
+            bool steep = Math.Abs(end.y - start.y) > Math.Abs(end.x - start.x);
+            if (steep)
             {
-                texture.SetPixel(x, y, color);
-                error2 = 2 * error1;
-                if(error2 >= dy)
+                int t = start.x; start.x = start.y; start.y = t;
+                t = end.x; end.x = end.y; end.y = t;
+            }
+            if (start.x > end.x)
+            {
+                int t = start.x; start.x = end.x; end.x = t;
+                t = start.y; start.y = end.y; end.y = t;
+            }
+            
+            int dx = end.x - start.x;
+            int dy = Math.Abs(end.y - start.y);
+            int error = dx / 2;
+            int ystep = (start.y < end.y) ? 1 : -1;
+            int y = start.y;
+
+            for (int x = start.x; x <= end.x; x++)
+            {
+                if (steep)
                 {
-                    if(x == end.x) break;
-                    error1 *= dy;
-                    x += sx;
+                    texture.SetPixel(y, x, color);
                 }
-                if(error2 <= dx)
+                else
                 {
-                    if(y == end.y) break;
-                    error1 += dx;
-                    y += sy;
+                    texture.SetPixel(x, y, color);
+                }
+                error -= dy;
+                if (error < 0)
+                {
+                    y += ystep;
+                    error += dx;
                 }
             }
-            texture.Apply();
         }
 
 
-        private static void PlotLineHigh(Texture2D texture, int x1, int y1, int x2, int y2, Color color)
+        public static void PlotLineHigh(Texture2D texture, int x1, int y1, int x2, int y2, Color color)
         {
             int dx = x2 - x1;
             int dy = y2 - y1;
@@ -330,8 +349,28 @@ namespace kfutils
         }
 
 
+        public static void DrawNGon(this Texture2D texture, Color color, Vector2Int center, int radius, int sides, float rotation = 0.0f)
+        {
+            if(sides < 3) throw new Exception("NGon must have at least 3 sides!");
+            float sideAngle = TWO_PI / sides;
+            float currentAngle, nextAngle;
+            currentAngle = nextAngle = rotation;
+            Vector2Int start = new(), end = new();
+            for(int i = 1; i < sides; i++)
+            {
+                nextAngle += sideAngle;
+                start.Set((int)(Mathf.Cos(currentAngle) * radius) + center.x, (int)(Mathf.Sin(currentAngle) * radius) + center.y);
+                end.Set((int)(Mathf.Cos(nextAngle) * radius) + center.x, (int)(Mathf.Sin(nextAngle) * radius) + center.y);
+                texture.DrawLineSegment(start, end, color);
+                currentAngle = nextAngle;
+            }
+            nextAngle = rotation;
+            start.Set((int)(Mathf.Cos(currentAngle) * radius) + center.x, (int)(Mathf.Sin(currentAngle) * radius) + center.y);
+            end.Set((int)(Mathf.Cos(nextAngle) * radius) + center.x, (int)(Mathf.Sin(nextAngle) * radius) + center.y);
+            texture.DrawLineSegment(start, end, color);
+        }
 
-        
+
     }
 
 
