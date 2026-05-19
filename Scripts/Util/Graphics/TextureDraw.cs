@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace kfutils
+namespace kfutils.graphics
 {
 
     public static class TextureDraw
@@ -349,7 +350,7 @@ namespace kfutils
         }
 
 
-        public static void DrawNGon(this Texture2D texture, Color color, Vector2Int center, int radius, int sides, float rotation = 0.0f)
+        public static void DrawNGonHollow(this Texture2D texture, Color color, Vector2Int center, int radius, int sides, float rotation = 0.0f)
         {
             if(sides < 3) throw new Exception("NGon must have at least 3 sides!");
             float sideAngle = TWO_PI / sides;
@@ -368,6 +369,85 @@ namespace kfutils
             start.Set((int)(Mathf.Cos(currentAngle) * radius) + center.x, (int)(Mathf.Sin(currentAngle) * radius) + center.y);
             end.Set((int)(Mathf.Cos(nextAngle) * radius) + center.x, (int)(Mathf.Sin(nextAngle) * radius) + center.y);
             texture.DrawLineSegment(start, end, color);
+        }
+
+
+        public static void DrawNGonSolid(this Texture2D texture, Color color, Vector2Int center, int radius, int sides, float rotation = 0.0f)
+        {
+            texture.DrawNGonHollow(color, center, radius, sides, rotation);
+            texture.FloodFillToMatch(center, color);
+        }
+
+
+        public static void FloodFill(this Texture2D texture, Vector2Int start, Color color)
+        {
+            Color startColor = texture.GetPixel(start.x, start.y);
+            if(startColor == color) return;
+            List<Vector2Int> currentPixels = new();
+            List<Vector2Int> nextPixels = new();
+            List<Vector2Int> dummyList;
+            currentPixels.Add(start);
+            while(currentPixels.Count > 0)
+            {
+                for(int i = 0; i < currentPixels.Count; i++)
+                {
+                    texture.SetPixel(currentPixels[i].x, currentPixels[i].y, color);
+                }
+                for(int i = 0; i < currentPixels.Count; i++)
+                {
+                    if(texture.GetPixel(currentPixels[i].x + 1, currentPixels[i].y) == startColor) 
+                            nextPixels.Add(new Vector2Int(currentPixels[i].x + 1, currentPixels[i].y));
+
+                    if(texture.GetPixel(currentPixels[i].x - 1, currentPixels[i].y) == startColor) 
+                            nextPixels.Add(new Vector2Int(currentPixels[i].x - 1, currentPixels[i].y));
+
+                    if(texture.GetPixel(currentPixels[i].x, currentPixels[i].y + 1) == startColor) 
+                            nextPixels.Add(new Vector2Int(currentPixels[i].x, currentPixels[i].y + 1));
+                            
+                    if(texture.GetPixel(currentPixels[i].x, currentPixels[i].y - 1) == startColor) 
+                            nextPixels.Add(new Vector2Int(currentPixels[i].x, currentPixels[i].y - 1));
+                }
+                dummyList = currentPixels;
+                currentPixels = nextPixels;
+                nextPixels = dummyList;
+                nextPixels.Clear();
+            }
+            texture.Apply();
+        }
+
+
+        public static void FloodFillToMatch(this Texture2D texture, Vector2Int start, Color color)
+        {
+            List<Vector2Int> currentPixels = new();
+            List<Vector2Int> nextPixels = new();
+            List<Vector2Int> dummyList;
+            currentPixels.Add(start);
+            while(currentPixels.Count > 0)
+            {
+                for(int i = 0; i < currentPixels.Count; i++)
+                {
+                    texture.SetPixel(currentPixels[i].x, currentPixels[i].y, color);
+                }
+                for(int i = 0; i < currentPixels.Count; i++)
+                {
+                    if(texture.GetPixel(currentPixels[i].x + 1, currentPixels[i].y) != color) 
+                            nextPixels.Add(new Vector2Int(currentPixels[i].x + 1, currentPixels[i].y));
+
+                    if(texture.GetPixel(currentPixels[i].x - 1, currentPixels[i].y) != color) 
+                            nextPixels.Add(new Vector2Int(currentPixels[i].x - 1, currentPixels[i].y));
+
+                    if(texture.GetPixel(currentPixels[i].x, currentPixels[i].y + 1) != color) 
+                            nextPixels.Add(new Vector2Int(currentPixels[i].x, currentPixels[i].y + 1));
+                            
+                    if(texture.GetPixel(currentPixels[i].x, currentPixels[i].y - 1) != color) 
+                            nextPixels.Add(new Vector2Int(currentPixels[i].x, currentPixels[i].y - 1));
+                }
+                dummyList = currentPixels;
+                currentPixels = nextPixels;
+                nextPixels = dummyList;
+                nextPixels.Clear();
+            }
+            texture.Apply();
         }
 
 
