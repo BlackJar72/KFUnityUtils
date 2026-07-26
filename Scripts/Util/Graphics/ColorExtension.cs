@@ -10,9 +10,7 @@ namespace kfutils.graphics
     {
 
         [Pure] public static Vector3 Vec3RGB(this Color color) => new Vector3(color.r, color.g, color.b);
-        [Pure] public static Vector4 Vec4RGB(this Color color) => new Vector4(color.r, color.g, color.b, color.a);
         [Pure] public static Color AsRGB(this Vector3 vector) => new Color(vector.x, vector.y, vector.z, 1.0f);
-        [Pure] public static Color AsRGB(this Vector4 vector) => new Color(vector.x, vector.y, vector.z, vector.w);
         public static Color AsHSV(this Vector3 vector, bool hdr = false) => Color.HSVToRGB(vector.x, vector.y, vector.z, hdr);
 
 
