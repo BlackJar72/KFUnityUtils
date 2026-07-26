@@ -44,6 +44,30 @@ namespace kfutils.graphics
         }
 
 
+        public static float HRGBDistanceSQ(this Color color, Color other)
+        {
+            Vector3 colorv = color.Vec3HSV();
+            Vector3 otherv = other.Vec3HSV();
+            float dh = colorv.x - otherv.x;
+            float dr = color.r - other.r;
+            float dg = color.g - other.g;
+            float db = color.b - other.b;
+            return (dr * dr) + (dg * dg) + (db * db) + (dh * dh);
+        }
+
+
+        public static float HRGBDistance(this Color color, Color other)
+        {
+            Vector3 colorv = color.Vec3HSV();
+            Vector3 otherv = other.Vec3HSV();
+            float dh = colorv.x - otherv.x;
+            float dr = color.r - other.r;
+            float dg = color.g - other.g;
+            float db = color.b - other.b;
+            return Mathf.Sqrt((dr * dr) + (dg * dg) + (db * db) + (dh * dh));
+        }
+
+
         public static float HSVDistanceSQ(this Color color, Color other)
         {
             Vector3 colorv = color.Vec3HSV();
