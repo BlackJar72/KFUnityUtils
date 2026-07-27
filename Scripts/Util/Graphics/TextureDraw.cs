@@ -470,7 +470,6 @@ namespace kfutils.graphics
             int rows = Mathf.RoundToInt((float)Math.Pow(lut.width, 1.0/3.0));
             int blockSize = lut.width / rows;
             int colorSize = blockSize - 1;
-            Debug.Log("LUT width = " + lut.width + "; rows = " + rows + "; blockSize = " + blockSize);
             int x, y, r, g, b;
             for(int i = 0; i < texture.width; i++) 
                 for(int j = 0; j < texture.height; j++)
@@ -482,7 +481,6 @@ namespace kfutils.graphics
                     x = r + ((b % rows) * blockSize);
                     y = g + ((b / rows) * blockSize);
                     texture.SetPixel(i, j, lut.GetPixel(x,y));
-                    //texture.SetPixel(i, j, c);
                 }
             texture.Apply();
         }
