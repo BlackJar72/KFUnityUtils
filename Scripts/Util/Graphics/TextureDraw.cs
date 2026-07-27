@@ -451,6 +451,43 @@ namespace kfutils.graphics
         }
 
 
+        /// <summary>
+        /// This will modify the textures by applying the given LUT to all its pixels. 
+        /// 
+        /// The LUT must be a square 2D texture.  It must be made up of a a grid of red-green maps representing 
+        /// different levels of blue.  The number of rows and column should be the square root of the width of 
+        /// individual maps. An 8x8 grid of 64x64 tables, resulting in a 512x512 texture is typical.  A 16x16 grid 
+        /// of 256x256 subtables, resulting in a 4k texture would also work, but the time involved in computing 
+        /// a LUT of that size usually makes them impractical to use.
+        /// 
+        /// The LUT and the image must both be flagged as read-write.  The lut should also should also have a wrap 
+        /// mode of clamp and a filter mode of point.
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="lut"></param>
+        public static void ApplyLUT(this Texture2D texture, Texture2D lut)
+        {
+            int rows = Mathf.RoundToInt((float)Math.Pow(lut.width, 1.0/3.0));
+            int blockSize = lut.width / rows;
+            int colorSize = blockSize - 1;
+            Debug.Log("LUT width = " + lut.width + "; rows = " + rows + "; blockSize = " + blockSize);
+            int x, y, r, g, b;
+            for(int i = 0; i < texture.width; i++) 
+                for(int j = 0; j < texture.height; j++)
+                {
+                    Color c = texture.GetPixel(i, j);
+                    r = (int)(c.r * colorSize);
+                    g = (int)(c.g * colorSize);
+                    b = (int)(c.b * colorSize);
+                    x = r + ((b % rows) * blockSize);
+                    y = g + ((b / rows) * blockSize);
+                    texture.SetPixel(i, j, lut.GetPixel(x,y));
+                    //texture.SetPixel(i, j, c);
+                }
+            texture.Apply();
+        }
+
+
     }
 
 
