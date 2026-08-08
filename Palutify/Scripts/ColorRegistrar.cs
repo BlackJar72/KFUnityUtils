@@ -1,11 +1,8 @@
 using UnityEngine;
-using kfutils;
-using kfutils.graphics;
 using System.Collections.Generic;
 
 
-
-namespace pixelut {
+namespace kfutils.graphics.palutify {
 
     public class ColorRegistrar
     {
