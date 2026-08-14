@@ -24,12 +24,6 @@ namespace kfutils.graphics.palutify {
         private ProcessPixel PixelProcessor = ProcessPixelRGB;
 
 
-        void Awake()
-        {
-            Start();
-        }
-
-
         void Start()
         {
             if(palette == null) return;
