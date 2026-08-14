@@ -3,16 +3,49 @@ using UnityEngine;
 
 namespace kfutils.time {
 
+    /// <summary>
+    /// Persistent world time, intended to be edited it needed to (for example) time scale 
+    /// this class should be edited accordingly.  This is meant to be a singleton, and no 
+    /// more than one should ever exist in the game at once (reguardless of how many scenes 
+    /// are loaded). This uses a double to allow for long running and open-ended games, and 
+    /// the seconds should be saved in save files, set from the save file on load, and reset 
+    /// to 0 for a new game.
+    /// 
+    /// If run in the editor it will also track the number of frames since its creation and 
+    /// should useful information in the inspector.  This is not done in a stand alone 
+    /// application.  
+    /// 
+    /// This is designed to measure a time using simplified, stylized time, where all months 
+    /// are the same length.  It does not track days and years in a ways consistent with 
+    /// time in the real world.
+    /// </summary>
     public class WorldTime : MonoBehaviour
     {
-        public const float TIME_SCALE = 60f; // How many times faster time runs in game; 60 gives a 24 minute day
+        // How many times faster time runs in game; 60 gives a 24 minute day.
+        // Edit this to change rate time passes in the game; 1.0f is real time.
+        public const float TIME_SCALE = 60f; 
+        
+        // Relative lengths of time units to the next larger unit, edit if you 
+        // want to change these (e.g., the number of months in a year).
+        public const int SECONDS_IN_MINUTE = 60;
+        public const int MINUTES_IN_HOUR = 60;
+        public const int HOURS_IN_DAY = 24;
+        public const int DAYS_IN_WEEK = 7;
+        public const int WEEKS_IN_MONTH = 4;
+        public const int MONTHS_IN_YEAR = 12;
+
+        // Derived relations between time units more not directly adjacent in size; 
+        // these should not usually be directly edited.
+        public const int DAYS_IN_MONTH = DAYS_IN_WEEK * WEEKS_IN_MONTH;
+        public const int DAYS_IN_YEAR = DAYS_IN_MONTH * MONTHS_IN_YEAR;
 
         // Time Units in In-Game World Time
-        public const double MINUTE = 60.0;
-        public const double HOUR = MINUTE * 60.0f;
-        public const double DAY = HOUR * 24.0;
-        public const double WEEK = DAY * 7.0;
-        public const double MONTH = WEEK * 4.0;
+        public const double MINUTE = SECONDS_IN_MINUTE;
+        public const double HOUR = MINUTE * MINUTES_IN_HOUR;
+        public const double DAY = HOUR * HOURS_IN_DAY;
+        public const double WEEK = DAY * DAYS_IN_WEEK;
+        public const double MONTH = WEEK * WEEKS_IN_MONTH;
+        public const double YEAR = MONTH * MONTHS_IN_YEAR;
 
         // In-Game Time Units in Real Time
         public const double RT_MINUTE = MINUTE / TIME_SCALE;
@@ -20,6 +53,7 @@ namespace kfutils.time {
         public const double RT_DAY = DAY / TIME_SCALE;
         public const double RT_WEEK = WEEK / TIME_SCALE;
         public const double RT_MONTH = MONTH / TIME_SCALE;
+        public const double RT_YEAR = YEAR / TIME_SCALE;
 
 
         private static WorldTime instance;
@@ -32,14 +66,18 @@ namespace kfutils.time {
         public static int Day => Mathf.FloorToInt((float)(seconds / RT_DAY));
         public static int Week => Mathf.FloorToInt((float)(seconds / RT_WEEK));
         public static int Month => Mathf.FloorToInt((float)(seconds / RT_MONTH));
-        public static int DayOfWeek => Day % 7;
+        public static int Year => Mathf.FloorToInt((float)(seconds / RT_YEAR));
+        public static int DayOfWeek => Day % DAYS_IN_WEEK;
         public static float TimeInDay => (float)(seconds / RT_DAY) - Day;
-        public static int DayOfMonth => Day % 28;
+        public static int DayOfMonth => Day % DAYS_IN_MONTH;
+        public static int WeekOfMonth => Week % WEEKS_IN_MONTH;
+        public static int MonthOfYear => Month % MONTHS_IN_YEAR;
         public static float TimeInMonth => (float)(seconds / RT_MONTH) - Month;
 
 
 #if UNITY_EDITOR
-        [SerializeField] double worldTime;
+        // This exists to be visible in the inspector
+        [SerializeField] double worldTime; 
         private static long frame = 0;
         public static long Frame => frame;
 
@@ -65,10 +103,12 @@ namespace kfutils.time {
                 #endif
             }
             instance = this;
+            #if UNITY_EDITOR
             Debug.Log("Minute = " + MINUTE + " => " + RT_MINUTE);
             Debug.Log("Hour = " + HOUR + " => " + RT_HOUR);
             Debug.Log("Day = " + DAY + " => " + RT_DAY);
             Debug.Log("Week = " + WEEK + " => " + RT_WEEK);
+            #endif
         }
 
 
