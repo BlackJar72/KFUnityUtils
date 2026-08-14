@@ -63,15 +63,21 @@ namespace kfutils.time {
         public static double time => seconds;
         public static float ftime => (float)seconds;
 
+        public static int Minute => Mathf.FloorToInt((float)(seconds / RT_MINUTE));
+        public static int Hour => Mathf.FloorToInt((float)(seconds / RT_HOUR)); 
         public static int Day => Mathf.FloorToInt((float)(seconds / RT_DAY));
         public static int Week => Mathf.FloorToInt((float)(seconds / RT_WEEK));
         public static int Month => Mathf.FloorToInt((float)(seconds / RT_MONTH));
         public static int Year => Mathf.FloorToInt((float)(seconds / RT_YEAR));
         public static int DayOfWeek => Day % DAYS_IN_WEEK;
         public static float TimeInDay => (float)(seconds / RT_DAY) - Day;
+        public static float SecondOfMinute => Hour % SECONDS_IN_MINUTE;
+        public static float MinuteOfHour => Hour % MINUTES_IN_HOUR;
+        public static int HourOfDay => Hour % HOURS_IN_DAY; 
         public static int DayOfMonth => Day % DAYS_IN_MONTH;
         public static int WeekOfMonth => Week % WEEKS_IN_MONTH;
         public static int MonthOfYear => Month % MONTHS_IN_YEAR;
+        public static int DayOfYear => Day % DAYS_IN_YEAR;
         public static float TimeInMonth => (float)(seconds / RT_MONTH) - Month;
 
 
