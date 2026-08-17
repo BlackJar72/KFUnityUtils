@@ -1,4 +1,4 @@
-namespace kfutils.UI {
+namespace kfutils.ui {
 
     /// <summary>
     /// Tags a class as having data that could be polled by / for the 
